@@ -1,5 +1,5 @@
 sub inicializarParametrosQuestClasse2 {
-    my ($classe) = @_;
+    my ($manterOuGuardar) = @_;
     my %items = (
     510 => "7 1 0", #ervaAzul
     957 => "10 1 0", #unhaApodrecida
@@ -8,8 +8,8 @@ sub inicializarParametrosQuestClasse2 {
     );
     Commands::run("conf -f questc2_implementada true");
     foreach $key (keys %items) {
-        if ($classe == 1) { 
-            Commands::run("iconf $key $items{$key}") 
+        if ($manterOuGuardar eq "manter") {
+            Commands::run("iconf $key $items{$key}")
         } else {
             Commands::run("iconf $key 0 1 0")
         }
@@ -23,7 +23,7 @@ sub inicializarParametrosQuestClasse2 {
 #convertido e reescrito pra eventMacro por Nipodemos
 automacro virarArruaceiroInicio_salvarEmMorocc {
     JobID $parametrosClasses{idC1}, $parametrosClasses{idBC1}
-    JobLevel = 50
+    JobLevel >= $configsBuild{lvlClasseParaVirarClasse2}
     FreeSkillPoints = 0
     priority 2
     exclusive 1
@@ -43,7 +43,7 @@ automacro virarArruaceiroInicio_salvarEmMorocc {
 
 automacro virarArruaceiroInicio_IrNoNpc {
     JobID $parametrosClasses{idC1}, $parametrosClasses{idBC1}
-    JobLevel = 50
+    JobLevel >= $configsBuild{lvlClasseParaVirarClasse2}
     FreeSkillPoints = 0
     priority 2
     exclusive 1
@@ -65,7 +65,7 @@ automacro virarArruaceiroInicio_IrNoNpc {
 
 automacro virarArruaceiroInicio {
     JobID $parametrosClasses{idC1}, $parametrosClasses{idBC1}
-    JobLevel = 50
+    JobLevel >= $configsBuild{lvlClasseParaVirarClasse2}
     priority 2
     exclusive 1
     NpcNear /Arruaceira da Guilda/
@@ -141,7 +141,7 @@ automacro virarArruaceiro_etapa3_coletarItens {
             log =================================
             ]
 
-        } elsif ( $qtdErvaAzul >= 6 && $qtdUnha < 10 ) { 
+        } elsif ( $qtdErvaAzul >= 6 && $qtdUnha < 10 ) {
             #se ja tiver Erva Azul, vai coletar: Unha Apodrecida
             [
             do conf lockMap pay_dun00
@@ -157,7 +157,7 @@ automacro virarArruaceiro_etapa3_coletarItens {
             log ================================
             ]
 
-        } elsif ( $qtdErvaAzul >= 6 && $qtdUnha >= 10 && $qtdOsso < 10 ) { 
+        } elsif ( $qtdErvaAzul >= 6 && $qtdUnha >= 10 && $qtdOsso < 10 ) {
             #se ja tiver Erva Azul e Unha Apodrecida, vai coletar: Osso
             [
             do conf lockMap pay_dun01
@@ -208,17 +208,52 @@ automacro virarArruaceiro_etapa3_coletarItens {
 #2018#Mudança de Classe: Arruaceiro#SG_FEEL#QUE_NOIMAGE#
 #Você deve pagar uma taxa de registro para se tornar Arruaceiro. Vou lhe dizer os itens que você precisa trazer e o quanto você precisa pagar de taxa. #
 #10.000 zenys, 10 Ossos, 6 Ervas Azuis, 10 Unhas Apodrecidas e 10 Mandíbulas Horrendas. #
-automacro virarArruaceiro_etapa3_tenhoOsItensIrProNpc {
-    InInventory "Erva Azul" >= 6
-    InInventory "Unha Apodrecida" >= 10
-    InInventory "Osso" >= 10
+automacro virarArruaceiro_etapa3_tenhoOsItensbugged {
+    ConfigKey questArruaceiro peguei
+    QuestActive 2018
+    Zeny < 10000
+    exclusive 1
+    timeout 60
+    call {
+        [
+        log por algum motivo, o bot não tem nem os 10k de zeny pra fazer a quest
+        log tentando resolver isso
+        log Se essa mensagem aparecer repetidas vezes, seu bot nao tem
+        log zeny suficiente pra fazer a quest, logue manualmente nele
+        log e passa pelo menos 20k de zeny
+        ]
+        do autosell
+    }
+}
+
+automacro virarArruaceiro_etapa3_tenhoOsItensbugged2 {
+    InInventory "Erva Azul"          >= 6
+    InInventory "Unha Apodrecida"    >= 10
+    InInventory "Osso"               >= 10
     InInventory "Mandíbula Horrenda" >= 10
+    QuestActive 2018
+    ConfigKeyNot questArruaceiro peguei
+    exclusive 1
+    call {
+        [
+        log ===================================
+        log = TENHO TODOS OS ITEMS DA QUEST!!!!
+        log ===================================
+        ]
+        do conf -f questArruaceiro peguei
+    }
+}
+
+#2018#Mudança de Classe: Arruaceiro#SG_FEEL#QUE_NOIMAGE#
+#Você deve pagar uma taxa de registro para se tornar Arruaceiro. Vou lhe dizer os itens que você precisa trazer e o quanto você precisa pagar de taxa. #
+#10.000 zenys, 10 Ossos, 6 Ervas Azuis, 10 Unhas Apodrecidas e 10 Mandíbulas Horrendas. #
+automacro virarArruaceiro_etapa3_tenhoOsItensIrProNpc {
+    ConfigKey questArruaceiro peguei
     QuestActive 2018
     Zeny > 9999
     NpcNotNear /Smith/
     exclusive 1
     call {
-        do conf -f questArruaceiro peguei
         log Vamos No NPC já temos os Itens...
         call pararDeAtacar
         do conf lockMap none
@@ -241,41 +276,13 @@ automacro virarArruaceiro_etapa3_tenhoOsItensIrProNpc {
 #2018#Mudança de Classe: Arruaceiro#SG_FEEL#QUE_NOIMAGE#
 #Você deve pagar uma taxa de registro para se tornar Arruaceiro. Vou lhe dizer os itens que você precisa trazer e o quanto você precisa pagar de taxa. #
 #10.000 zenys, 10 Ossos, 6 Ervas Azuis, 10 Unhas Apodrecidas e 10 Mandíbulas Horrendas. #
-automacro virarArruaceiro_etapa3_tenhoOsItensbugged {
-    InInventory "Erva Azul" >= 6
-    InInventory "Unha Apodrecida" >= 10
-    InInventory "Osso" >= 10
-    InInventory "Mandíbula Horrenda" >= 10
-    QuestActive 2018
-    Zeny < 10000
-    exclusive 1
-    call {
-        do conf -f questArruaceiro peguei
-        [
-        log por algum motivo, o bot não tem nem os 10k de zeny pra fazer a quest
-        log tentando resolver isso
-        log Se essa mensagem aparecer repetidas vezes, seu bot nao tem 
-        log zeny suficiente pra fazer a quest, logue manualmente nele
-        log e passa pelo menos 20k de zeny 
-        ]
-        do autosell
-    }
-}
-
-#2018#Mudança de Classe: Arruaceiro#SG_FEEL#QUE_NOIMAGE#
-#Você deve pagar uma taxa de registro para se tornar Arruaceiro. Vou lhe dizer os itens que você precisa trazer e o quanto você precisa pagar de taxa. #
-#10.000 zenys, 10 Ossos, 6 Ervas Azuis, 10 Unhas Apodrecidas e 10 Mandíbulas Horrendas. #
 automacro virarArruaceiro_etapa3_tenhoOsItens {
-    InInventory "Erva Azul" >= 6
-    InInventory "Unha Apodrecida" >= 10
-    InInventory "Osso" >= 10
+    ConfigKey questArruaceiro peguei
     NpcNear /Smith/
-    InInventory "Mandíbula Horrenda" >= 10
     Zeny > 9999
     QuestActive 2018
     exclusive 1
     call {
-        do conf -f questArruaceiro peguei
         do conf lockMap none
         do conf sitAuto_hp_upper 80
         call pararDeAtacar
@@ -297,7 +304,6 @@ automacro virarArruaceiro_etapa3_tenhoOsItens {
 automacro virarArruaceiro_etapa4 {
     JobID $parametrosClasses{idC1}, $parametrosClasses{idBC1}
     exclusive 1
-    JobLevel = 50
     CurrentHP >= 80%
     priority 5 #prioridade baixa
     delay 5
@@ -359,7 +365,6 @@ macro irAteLocal_questArruaceiro {
 }
 
 automacro virarArruaceiro_etapa5_DentroDaCasa {
-    JobLevel = 50
     IsInMapAndCoordinate in_rogue 169 34, in_rogue 246 25, in_rogue 164 106
     exclusive 1
     priority -5
@@ -381,7 +386,6 @@ automacro virarArruaceiro_etapa5_DentroDaCasa {
 }
 
 automacro virarArruaceiro_etapa6_labirinto {
-    JobLevel = 50
     exclusive 1
     IsInMapAndCoordinate in_rogue 15 105
     macro_delay 0.5
@@ -406,7 +410,6 @@ automacro virarArruaceiro_etapa6_labirinto {
 automacro virarArruaceiro_etapa6_morreuNoLabirinto_hpAlto {
     QuestActive 2026
     ConfigKeyNot questArruaceiro none
-    JobLevel = 50
     NotInMap in_rogue
     CurrentHP >= 80%
     exclusive 1
@@ -444,7 +447,6 @@ automacro virarArruaceiro_etapa6_morreuNoLabirinto_hpAlto {
 #Atravesse o túnel subterrâneo até a Guilda dos Arruaceiros. #
 automacro virarArruaceiro_etapa6_morreuNoLabirinto_hpBaixo {
     QuestActive 2026
-    JobLevel = 50
     NotInMap in_rogue
     CurrentHP < 80%
     exclusive 1
@@ -469,7 +471,6 @@ automacro virarArruaceiro_etapa6_morreuNoLabirinto_hpBaixo {
 #Você só precisa andar até a Guilda dos Arruaceiros por um túnel subterrâneo. Um teste simples, não é? Mas não posso garantir que seja totalmente seguro. #
 #Atravesse o túnel subterrâneo até a Guilda dos Arruaceiros. #
 automacro virarArruaceiro_etapaFinal {
-    JobLevel = 50
     #IsInMapAndCoordinate in_rogue 359 117
     NpcNear /Marybell/
     InMap in_rogue
@@ -491,7 +492,6 @@ automacro virarArruaceiro_etapaFinal {
 #Você só precisa andar até a Guilda dos Arruaceiros por um túnel subterrâneo. Um teste simples, não é? Mas não posso garantir que seja totalmente seguro. #
 #Atravesse o túnel subterrâneo até a Guilda dos Arruaceiros. #
 automacro virarArruaceiro_etapaFinal_Alternativo {
-    JobLevel = 50
     #IsInMapAndCoordinate in_rogue 378 113
     NpcNear /Homem Assustador/
     InMap in_rogue

@@ -10,7 +10,7 @@ automacro questClasse2_virarClasse2Inicio_bugada {
         log =============================================
         log = Estou pronto para virar claase2, porém    =
         log =     os pontos não estão distribuídos...   =
-        log =            Vamos resolver isso!        =
+        log =            Vamos resolver isso!           =
         log =============================================
         ]
         do conf skillsAddAuto 1
@@ -49,6 +49,11 @@ automacro questClasse2_jaSouClasse2 {
         ]
         do conf virarClasse2 none
         do conf -f o_que_estou_fazendo acabeiDeVirarClasse2
+        release equipandoArmaEden
+        release equipandoArmaduraEden
+        release equipandoBotaEden
+        release equipandoChapeuEden
+        release equipandoCapaEden
         call atualizarBuild
     }
 }
@@ -65,16 +70,20 @@ automacro questClasse2_jaSouClasse2NaoAutomatico {
         ]
         do conf esperarFazerQuest none
         do conf -f o_que_estou_fazendo acabeiDeVirarClasse2
+        release equipandoArmaEden
+        release equipandoArmaduraEden
+        release equipandoBotaEden
+        release equipandoChapeuEden
+        release equipandoCapaEden
         call atualizarBuild
     }
 }
 
-automacro nivelDeClasse50 {
+automacro questClasse2_avisoNivelDeClasse50 {
     JobLevel = 50
     JobID $parametrosClasses{idC1}, $parametrosClasses{idBC1}
     exclusive 1
     timeout 20
-    NotInMap izlude
     ConfigKeyNot virarClasse2 true
     ConfigKeyNot questc2_implementada true
     ConfigKeyNot virarClasse2T true
@@ -91,7 +100,7 @@ automacro nivelDeClasse50 {
         call pararDeAtacar
         do conf -f esperarFazerQuest true
         do conf -f o_que_estou_fazendo esperandoQuestSerFeitaManualmente
-        if ($.map != izlude) do move izlude
+        do move &config(saveMap) if ($.map != &config(saveMap))
     }
 }
 

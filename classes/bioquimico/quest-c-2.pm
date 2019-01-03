@@ -1,5 +1,5 @@
 sub inicializarParametrosQuestClasse2 {
-    my ($classe) = @_;
+    my ($manterOuGuardar) = @_;
     my %items = (
     657 => "7 1 0",     #Poção da Fúria Selvagem
     612 => "100 1 0",   #Mini Fornalha
@@ -8,8 +8,8 @@ sub inicializarParametrosQuestClasse2 {
     );
     Commands::run("conf -f questc2_implementada true");
     foreach $key (keys %items) {
-        if ($classe == 1) { 
-            Commands::run("iconf $key $items{$key}") 
+        if ($manterOuGuardar eq "manter") {
+            Commands::run("iconf $key $items{$key}")
         } else {
             Commands::run("iconf $key 0 1 0")
         }
@@ -74,37 +74,30 @@ automacro virarAlquimistaInicio {
 #                                        #
 #################################################################################
 
-automacro virarAlquimista_descobrindoQualItem {
-    NpcMsg /Como eu te disse, você precisa trazer/
+automacro virarAlquimista_descobrindoQualItem_fornalha {
+    NpcMsg /trazer 100 Mini-Fornalhas/
     exclusive 1
-        call {
-        [
-        log =*=*=*=*=*=*=*=*=*=*=*=*=*=*==*=*=*=
-        log a mensagem é: $.NpcMsgLastMsg
-        log *=*=*=*=*=*=*=*=*=*=*=*==*=*=*=*=*=*
-        ]
-        $mensagemExtraida = extrairMensagem("$.NpcMsgLastMsg")
-        if ( $mensagemExtraida =~ /F.ria Selvagem/) {
-            do conf -f questAlquimista comprarPocao
-        } elsif ( $mensagemExtraida =~ /Flecha/ ) {
-            do conf -f questAlquimista comprarFlecha
-        } elsif ( $mensagemExtraida =~ /Fornalha/ ) {
-            do conf -f questAlquimista comprarFornalha
-        } else {
-            log erro configurado proximo passo, cheque a macro
-            stop
-        }
+    call {
+        do conf -f questAlquimista comprarFornalha
         do conf -f virarAlquimista true
     }
 }
 
-sub extrairMensagem {
-    my ($mensagem) = @_;
-    if ($mensagem =~ /trazer (.+) para completar/) {
-     return $1;
-    } else {
-     warning "ERRO, NÃO FOI POSSIVEL EXTRAIR MENSAGEM\n";
-     return -1;
+automacro virarAlquimista_descobrindoQualItem_flecha {
+    NpcMsg /trazer \d+ Flecha/
+    exclusive 1
+    call {
+        do conf -f questAlquimista comprarFlecha
+        do conf -f virarAlquimista true
+    }
+}
+
+automacro virarAlquimista_descobrindoQualItem_pocao {
+    NpcMsg /trazer \d+ .+F.ria Selvagem/
+    exclusive 1
+    call {
+        do conf -f questAlquimista comprarPocao
+        do conf -f virarAlquimista true
     }
 }
 
@@ -151,7 +144,7 @@ macro comprarItem {
     [
     log ===================================
     log = vou em $.param[0] nas coordenadas $.param[1]
-    log = conversar com o npc $.param[2] , pode ser 
+    log = conversar com o npc $.param[2] , pode ser
     log = que o nome do npc seja abreviado
     log = para comprar $.param[4] $.param[3]
     log ===================================
@@ -173,7 +166,7 @@ macro comprarItem {
         log = muita treta vish mano
         log = manda mensagem lá pros criador dessa macro
         log = pq senão vai continuar na treta
-        log = E JÁ MANDA AS ÚLTIMAS 20 LINHAS DO CONFIG.TXT 
+        log = E JÁ MANDA AS ÚLTIMAS 20 LINHAS DO CONFIG.TXT
         log = KKKKKKKKKKKKKKKKKKKKKKK
         log ===================================
         ]
@@ -207,7 +200,7 @@ macro voltarProAlquimistaSenior {
     do conf lockMap none
     pause 3
     #isso vai checar se realmente entregamos o item, ja que está sempre suscetivel a falhas
-    #se não tiver entregado por qualquer motivo que seja, ele simplesmente vai tentar denovo 
+    #se não tiver entregado por qualquer motivo que seja, ele simplesmente vai tentar denovo
     #Se conseguir, ele move pra o proximo passo
     if ($.InInventoryIDLast = 657) { #Poção da Fúria Selvagem
         if (&inventory(657) < 7) do conf -f questAlquimista questionario
@@ -216,7 +209,7 @@ macro voltarProAlquimistaSenior {
     } elsif ($.InInventoryIDLast = 1752) { #Flecha de Fogo
         if (&inventory(1752)  < 500) do conf -f questAlquimista questionario
     }
-}        
+}
 
 #################################################################
 #                                                               #
@@ -333,7 +326,7 @@ automacro virarAlquimista_naoTenhoAFlor {
     ConfigKey questAlquimista pegarAFlor
     ConfigKeyNot questAlquimista fimDaQuest
     exclusive 1
-    Zeny >= 300000
+    Zeny >= 100000
     InInventoryID 710 < 1 #Flor das Ilusões
     ConfigKeyNot BetterShopper_on 1
     call {
@@ -354,7 +347,7 @@ automacro virarAlquimista_naoTenhoAFlor {
                 do reload config
             }
             do conf BetterShopper_0 Flor das Ilusões
-            do conf BetterShopper_0_maxPrice 350000
+            do conf BetterShopper_0_maxPrice 100000
             do conf BetterShopper_0_maxAmount 1
             do conf -f BetterShopper_on 1
         } else {
@@ -375,8 +368,7 @@ automacro virarAlquimista_naoTenhoAFlor_bugged {
     ConfigKey questAlquimista pegarAFlor
     ConfigKeyNot questAlquimista fimDaQuest
     exclusive 1
-    Zeny >= 300000
-    InInventoryID 710 < 1 #Flor das Ilusões
+    Zeny >= 100000
     ConfigKey BetterShopper_on 1
     NotInMap prontera
     call {
@@ -389,7 +381,7 @@ automacro virarAlquimista_naoTenhoAFlor_NemZeny {
     ConfigKey questAlquimista pegarAFlor
     ConfigKeyNot questAlquimista fimDaQuest
     exclusive 1
-    Zeny < 300000
+    Zeny < 100000
     InInventoryID 710 < 1 #Flor das Ilusões
     ConfigKeyNot lockMap pay_fild09
     ConfigKeyNot In_saveMap_sequence true
@@ -397,8 +389,8 @@ automacro virarAlquimista_naoTenhoAFlor_NemZeny {
     call {
         [
         log =====================================================
-        log =Não tenho zeny suficiente para comprar a Flor     
-        log =Então vou conseguir o dinheiro!                 
+        log =Não tenho zeny suficiente para comprar a Flor
+        log =Então vou conseguir o dinheiro!
         log =Começando o processo de vender loot e conseguir mais
         log =====================================================
         ]
@@ -418,7 +410,7 @@ automacro virarAlquimista_naoTenhoAFlor_NemZeny {
         do iconf 2402 0 0 1 #Sandálias [1]
         
         call voltarAtacar
-        call salvarNaCidade "payon" 
+        call salvarNaCidade "payon"
         do conf lockMap pay_fild09
     }
 }
@@ -457,7 +449,7 @@ automacro virarAlquimista_juntandoZeny {
         [
         log ======================================
         log =Estou coletando items pra fazer zeny
-        log =Para Quest de Alquimista         
+        log =Para Quest de Alquimista
         log ======================================
         ]
         if (&config(attackAuto) != 2) call voltarAtacar
@@ -552,10 +544,6 @@ automacro jaSouAlquimista {
     exclusive 1
     call {
         do conf teleportAuto_MaxDmg 1000
-        $check = pegarIndiceDoEquipamentoPeloId("robe", 2560) #Capa Valhalla
-        if ($check != -1) do eq $check
-        $check = pegarIndiceDoEquipamentoPeloId("topHead", 5583) #Chapeu valhalla
-        if ($check != -1) do eq $check
         call pararDeAtacar
         do conf BetterShopper_on 0
         do conf route_randomWalk_inTown 0

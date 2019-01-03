@@ -1,5 +1,5 @@
 sub inicializarParametrosQuestClasse2 {
-    my ($classe) = @_;
+    my ($manterOuGuardar) = @_;
     my %items = (
     #Possibilidade 1
     7053 => "5 1 0", #Cyfar
@@ -39,8 +39,8 @@ sub inicializarParametrosQuestClasse2 {
     );
     Commands::run("conf -f questc2_implementada false");
     foreach $key (keys %items) {
-        if ($classe == 1) { 
-            Commands::run("iconf $key $items{$key}") 
+        if ($manterOuGuardar eq "manter") {
+            Commands::run("iconf $key $items{$key}")
         } else {
             Commands::run("iconf $key 0 1 0")
         }
@@ -54,7 +54,7 @@ sub inicializarParametrosQuestClasse2 {
 #Não esta completo
 #falta a parte dos cogumelos e a parte final
 #Testar no BRO pois esta pro IRO RESTART
-automacro configurar Monge 1 {
+automacro configurarMonge1 {
     NotInMap prt_monk
     NotInMap monk_in
     JobLevel = 50
@@ -81,22 +81,22 @@ automacro configurar Monge 1 {
     }
 }
 
-automacro virar Monge 1 {
+automacro virarMonge1 {
     InMap prt_monk
-    QuestInactive 3016 
+    QuestInactive 3016
     priority 2
     run-once 1
     call {
         do move prt_monk 57 245
         pause 2
-        do talknpc 59 247 c r1 c r1 c     #Primeira parte Guarding Monk 
+        do talknpc 59 247 c r1 c r1 c     #Primeira parte Guarding Monk
     }
 }
 
 #3016#Mudança de Classe: Monge#SG_FEEL#QUE_NOIMAGE#
 #'Você quer ser um Monge? Então entre e fale com o Monge ^0000FFMuhae^000000. Ele vai orientar você.' #
 ##
-automacro virar Monge 2 {
+automacro virarMonge2 {
     QuestActive 3016
     priority 2
     run-once 1
@@ -109,7 +109,7 @@ automacro virar Monge 2 {
 #3023#Mudança de Classe: Monge#SG_FEEL#QUE_NOIMAGE#
 #'Vou avaliar seu esforço e decidir se você está qualificado ou não. Você deve trazer ^3355FFEspinhos de Porco-Espinho, Teias de Aranha e Patas de Inseto^000000.' #
 #5 Espinhos de Porco-Espinho, 20 Teias de Aranha e 10 Patas de Inseto #
-automacro virar Monge 3 {
+automacro virarMonge3 {
     QuestActive 3023
     priority 2
     timeout 300
@@ -119,7 +119,7 @@ automacro virar Monge 3 {
         do pconf 940 1
         $cobWeb = &invamount (1025)
         $porcupineQuill  = &invamount (1027)
-        $gLeg = &invamount (940) 
+        $gLeg = &invamount (940)
         if ( $cobWeb < 20 ) goto Cobweb
         if ( $cobWeb >= 20 && $porcupineQuill < 5 ) goto Porcupine
         if ( $cobWeb >= 20 && $porcupineQuill >= 5 && $gLeg < 10 ) goto GLeg
@@ -187,7 +187,7 @@ automacro virar Monge 3 {
 #3023#Mudança de Classe: Monge#SG_FEEL#QUE_NOIMAGE#
 #'Vou avaliar seu esforço e decidir se você está qualificado ou não. Você deve trazer ^3355FFEspinhos de Porco-Espinho, Teias de Aranha e Patas de Inseto^000000.' #
 #5 Espinhos de Porco-Espinho, 20 Teias de Aranha e 10 Patas de Inseto #
-automacro virar Monk 4  {
+automacro virarMonk4 {
     InInventory "Cobweb" >= 20
     InInventory "Porcupine Quill" >= 5
     InInventory "Grasshopper's Leg" >= 10

@@ -28,13 +28,36 @@ automacro questClasse1_virandoClasse1 {
         # $virarclasse1sequenciadeconversa tem como valor a sequencia de conversação correta
         # $idequipiniciante tem como valor a id da arma que vc recebe quando vira classe 1
         
-        do conf -f o_que_estou_fazendo virandoClasse1
+        do conf -f o_que_estou_fazendo virando Classe 1
         if ($parametrosQuestClasse1{precisaMover} = sim) {
             do move $parametrosQuestClasse1{mapa} $parametrosQuestClasse1{npc} &rand(1,5)
         }
         do talknpc $parametrosQuestClasse1{npc} $parametrosQuestClasse1{sequenciaConversa}
         $check = pegarIndiceDoEquipamentoPeloId("rightHand", "$parametrosQuestClasse1{equipeIniciante}")
         if ($check != -1) do eq $check
+
+        #Voltar pegar itens após o campo de treinamento
+        do conf itemsTakeAuto 1
+        do conf itemsGatherAuto 1
+    }
+}
+
+automacro questClasse1_saiDoCampoDeTreinamentoEEstouNoMapaErrado {
+    NotInMap $parametrosQuestClasse1{mapa}
+    InMapRegex /^(?!new_\d-\d).*/
+    JobID 0, 4023 #Aprendiz e Baby Aprendiz
+    JobLevel 10
+    SkillLevel NV_BASIC = 9
+    exclusive 1
+    BaseLevel > 11
+    call {
+        [
+            log ==============================================
+            log Deveria estar em $parametrosQuestClasse1{mapa}
+            log mas não estou, vou para lá
+            log ==============================================
+        ]
+        do move $parametrosQuestClasse1{mapa} $parametrosQuestClasse1{npc} &rand(1,5)
     }
 }
 
@@ -42,7 +65,6 @@ automacro questClasse1_jaSouClasse1 {
     JobIDNot 0 #aprendiz
     JobIDNot 4023 #Baby Aprendiz
     InInventoryID 2414 = 1 #sandalias de aprendiz
-    InInventoryID 5055 = 1 #chapeu de ovo de aprendiz
     exclusive 1
     call {
         do pconf 1243 0 #1243#Adaga_do_Aprendiz#
@@ -70,7 +92,7 @@ automacro questClasse1_jaSouClasse1 {
         $check = pegarIndiceDoEquipamentoPeloId("rightHand", "$parametrosQuestClasse1{equipeIniciante}")
         if ($check != -1) do eq $check
         call atualizarBuild
-        do conf -f o_que_estou_fazendo acabeiDeVirarClasse1
+        do conf -f o_que_estou_fazendo acabei de Virar Classe 1
     }
 }
 

@@ -1,5 +1,5 @@
 automacro questClasse2T_iniciarQuestClasse2T_bugada {
-    JobLevel = 50
+    JobLevel = $configsBuild{lvlClasseParaVirarClasse2T}
     exclusive 1
     JobID $parametrosClasses{idC1T}
     FreeSkillPoints != 0
@@ -18,8 +18,8 @@ automacro questClasse2T_iniciarQuestClasse2T_bugada {
 
 automacro questClasse2T_irParaJuno {
     exclusive 1
-    JobID $parametrosClasses{idC1T} 
-    JobLevel = 50
+    JobID $parametrosClasses{idC1T}
+    JobLevel = $configsBuild{lvlClasseParaVirarClasse2T}
     FreeSkillPoints = 0
     NotInMap yuno_in02
     ConfigKeyNot virarClasse2T true
@@ -34,8 +34,8 @@ automacro questClasse2T_irParaJuno {
 
 automacro questClasse2T_irFalarComLivro {
     exclusive 1
-    JobID $parametrosClasses{idC1T} 
-    JobLevel = 50
+    JobID $parametrosClasses{idC1T}
+    JobLevel = $configsBuild{lvlClasseParaVirarClasse2T}
     FreeSkillPoints = 0
     InMap yuno_in02
     NpcNotNear /Livro de Ymir/
@@ -47,8 +47,8 @@ automacro questClasse2T_irFalarComLivro {
 
 automacro questClasse2T_falarComLivro {
     exclusive 1
-    JobID $parametrosClasses{idC1T} 
-    JobLevel = 50
+    JobID $parametrosClasses{idC1T}
+    JobLevel = $configsBuild{lvlClasseParaVirarClasse2T}
     FreeSkillPoints = 0
     InMap yuno_in02
     NpcNear /Livro de Ymir/
@@ -59,8 +59,8 @@ automacro questClasse2T_falarComLivro {
 
 automacro questClasse2T_falarComNpcDaClasse {
     exclusive 1
-    JobID $parametrosClasses{idC1T} 
-    JobLevel = 50
+    JobID $parametrosClasses{idC1T}
+    JobLevel = $configsBuild{lvlClasseParaVirarClasse2T}
     FreeSkillPoints = 0
     InMap valkyrie
     call {
@@ -77,17 +77,20 @@ automacro questClasse2T_jaSouClasse2TSairDaValquiria {
         $mapaQueVou = $mapa{saveMap}
         do move valkyrie 44 33 &rand(3,5)
         do talk &npc(44 33) #teleportadora
-        switch ($mapaQueVou) {        
-            case (= aldebaran) $mapaQueVou = Al\sDe\sBaran
-            case (= morocc) $mapaQueVou = morroc
-            case (= yuno) $mapaQueVou = yuno
-            case (~ einbroch,rachel,veins) $mapaQueVou = juno
+        if ($mapaQueVou = aldebaran) {
+            $mapaQueVou = Al\sDe\sBaran
+
+        } elsif ($mapaQueVou = morocc) {
+            $mapaQueVou = morroc
+
+        } elsif ($mapaQueVou ~ einbroch,rachel,veins,yuno) {
+            $mapaQueVou = juno
+
         }
         #ainda tem que colocar uma condição pra caso seja uma cidade que nao esteja listada no teleporte
         do talk resp /$mapaQueVou/i
     }
 }
-        
 
 automacro questClasse2T_jaSouClasse2T {
     exclusive 1
@@ -98,6 +101,11 @@ automacro questClasse2T_jaSouClasse2T {
     call {
         do conf virarClasse2T none
         do conf -f o_que_estou_fazendo acabeiDeVirarClasse2T
+        release equipandoArmaEden
+        release equipandoArmaduraEden
+        release equipandoBotaEden
+        release equipandoChapeuEden
+        release equipandoCapaEden
         call atualizarBuild
     }
 }

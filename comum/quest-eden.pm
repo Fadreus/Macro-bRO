@@ -2,15 +2,6 @@
 
 
 automacro seJuntarAoGrupoEden_MoverPerto {
-    InInventoryID 22508 = 0  
-    IsNotEquippedID armor 15009
-    InInventoryID 15009 = 0
-    IsNotEquippedID armor 15010
-    InInventoryID 15010 = 0
-    IsNotEquippedID armor 15011
-    InInventoryID 15011 = 0
-    IsNotEquippedID armor 15031
-    InInventoryID 15031 = 0
     ConfigKeyNot quest_eden em_curso
     ConfigKeyNot naSequenciaDeSalvamento true
     InInventoryID 2414 = 0 #sapatos de aprendiz
@@ -24,15 +15,6 @@ automacro seJuntarAoGrupoEden_MoverPerto {
 }
 
 automacro seJuntarAoGrupoEden {
-    InInventoryID 22508 = 0
-    IsNotEquippedID armor 15009
-    InInventoryID 15009 = 0
-    IsNotEquippedID armor 15010
-    InInventoryID 15010 = 0
-    IsNotEquippedID armor 15011
-    InInventoryID 15011 = 0
-    IsNotEquippedID armor 15031
-    InInventoryID 15031 = 0
     ConfigKeyNot membroDoEden sim
     ConfigKeyNot quest_eden em_curso
     ConfigKeyNot naSequenciaDeSalvamento true
@@ -51,7 +33,7 @@ automacro seJuntarAoGrupoEden {
 }
 
 automacro entreiNoGrupoEden {
-    InInventoryID 22508 = 1
+    InInventoryID 22508 = 1 #Emblema do Éden#
     ConfigKeyNot membroDoEden sim
     exclusive 1
     call {
@@ -60,7 +42,7 @@ automacro entreiNoGrupoEden {
 }
 
 automacro questEden_trocarEmblemaIndoProNpc {
-    InInventoryID 6219 = 1
+    InInventoryID 6219 = 1 #emblema do grupo valhalla (o antigo)
     NpcNotNear /Lenore|Lime/
     exclusive 1
     priority -2 # um pouco alta
@@ -68,20 +50,20 @@ automacro questEden_trocarEmblemaIndoProNpc {
 }
 
 automacro questEden_trocarEmblema {
-    InInventoryID 6219 = 1
-    exclusive 1    
+    InInventoryID 6219 = 1 #emblema do grupo valhalla (o antigo)
+    exclusive 1
     priority -2 # um pouco alta
     NpcNear /Lenore|Lime/
     call {
         do talk $.NpcNearLastBinId
         do talk resp 0
-        do iconf 22508 0 0 0 #Novo Emblema do Grupo Valhalla
+        do iconf 22508 0 0 0 #Emblema do Éden
     }
 }
 
 automacro questEden12_iniciandoMoverPerto {
     NpcNotNear /Boya/
-    InInventoryID 22508 = 1
+    InInventoryID 22508 = 1 #Emblema do Éden#
     ConfigKeyNot fazerQuestEden nao
     BaseLevel 12..18
     exclusive 1
@@ -89,15 +71,15 @@ automacro questEden12_iniciandoMoverPerto {
     ConfigKeyNot naSequenciaDeSalvamento true
     ConfigKeyNot quest_eden em_curso
     ConfigKeyNot quest_eden terminando
-    IsNotEquippedID armor 15009
-    InInventoryID 15009 = 0
+    IsNotEquippedID armor 15009 #Uniforme Valhalla Iniciante
+    InInventoryID 15009 = 0 #Uniforme Valhalla Iniciante
     call moverPertoDosNpcEden
 }
 
 automacro questEden26_iniciandoMoverPerto {
     NpcNotNear /Boya/
     BaseLevel 26..32
-    InInventoryID 22508 = 1 
+    InInventoryID 22508 = 1 #Emblema do Éden#
     ConfigKeyNot fazerQuestEden nao
     exclusive 1
     QuestInactive 7138
@@ -106,8 +88,8 @@ automacro questEden26_iniciandoMoverPerto {
     ConfigKeyNot naSequenciaDeSalvamento true
     ConfigKeyNot quest_eden em_curso
     ConfigKeyNot quest_eden terminando
-    IsNotEquippedID armor 15010
-    InInventoryID 15010 = 0
+    IsNotEquippedID armor 15010 #Uniforme Valhalla Intermediário
+    InInventoryID 15010 = 0 #Uniforme Valhalla Intermediário
     call moverPertoDosNpcEden
 }
 
@@ -126,7 +108,7 @@ automacro questEden40_iniciandoMoverPerto {
     ConfigKeyNot quest_eden em_curso
     ConfigKeyNot quest_eden terminando
     IsNotEquippedID armor 15011
-    InInventoryID 22508 = 1 
+    InInventoryID 22508 = 1 #Emblema do Éden#
     InInventoryID 15011 = 0 #armadura que ganha com essa quest
     call moverPertoDosNpcEden
 }
@@ -135,15 +117,15 @@ automacro questEden60_iniciandoMoverPerto {
     NpcNotNear /Ur/
     BaseLevel 60..69
     exclusive 1
-    InInventoryID 22508 = 1 
+    InInventoryID 22508 = 1 #Emblema do Éden#
     JobID $parametrosClasses{idC2}, $parametrosClasses{idC2Alt}, $parametrosClasses{idC2T}, $parametrosClasses{idC2TAlt}, $parametrosClasses{idBC2}, $parametrosClasses{idBC2Alt}
     QuestInactive 7214
     ConfigKeyNot fazerQuestEden nao
     ConfigKeyNot naSequenciaDeSalvamento true
     ConfigKeyNot quest_eden em_curso
     ConfigKeyNot quest_eden terminando
-    IsNotEquippedID armor 15031
-    InInventoryID 15031 = 0
+    IsNotEquippedID armor 15031 #Armadura do Grupo Éden
+    InInventoryID 15031 = 0 #Armadura do Grupo Éden
     call moverPertoDosNpcEden
 }
 
@@ -156,15 +138,15 @@ macro moverPertoDosNpcEden {
     log ===========================================
     ]
     do move moc_para01 &rand(33,35) &rand(25,27) #posição otima no Eden
-    do reload event 
-    #estranhamente qando ele chega perto do npc do eden, ele nao checa alguma 
+    do reload event
+    #estranhamente qando ele chega perto do npc do eden, ele nao checa alguma
     #das condições (arrisco dizer a de inventory) por isso tive que colocar essa linha
     #que recarrega o eventMacros, aí a proxima automacro trigga de boas
 }
 
 automacro questEden12_iniciando {
     NpcNear /Boya/
-    InInventoryID 22508 = 1 
+    InInventoryID 22508 = 1 #Emblema do Éden#
     BaseLevel 12..17
     exclusive 1
     QuestInactive 7128
@@ -172,9 +154,21 @@ automacro questEden12_iniciando {
     ConfigKeyNot naSequenciaDeSalvamento true
     ConfigKeyNot quest_eden em_curso
     ConfigKeyNot quest_eden terminando
-    IsNotEquippedID armor 15009
-    InInventoryID 15009 = 0
-    call iniciandoQuestEden '1' '0' '0'
+    IsNotEquippedID armor 15009 #Uniforme Valhalla Iniciante
+    InInventoryID 15009 = 0 #Uniforme Valhalla Iniciante
+    call {
+        [
+        log ===================================
+        log =Iniciando a quest eden do lvl 12
+        log ===================================
+        ]
+        do talk $.NpcNearLastBinId
+        do talk resp 1
+        do talk resp 0
+        do talk resp 0
+
+        do conf -f o_que_estou_fazendo iniciando Quest Eden 12
+    }
 }
 
 
@@ -182,7 +176,7 @@ automacro questEden26_iniciando {
     NpcNear /Boya/
     BaseLevel 26..32
     ConfigKeyNot fazerQuestEden nao
-    InInventoryID 22508 = 1 
+    InInventoryID 22508 = 1 #Emblema do Éden#
     exclusive 1
     QuestInactive 7138
     QuestInactive 7139
@@ -190,24 +184,66 @@ automacro questEden26_iniciando {
     ConfigKeyNot naSequenciaDeSalvamento true
     ConfigKeyNot quest_eden em_curso
     ConfigKeyNot quest_eden terminando
-    IsNotEquippedID armor 15010
-    InInventoryID 15010 = 0
-    call iniciandoQuestEden '1'
+    IsNotEquippedID armor 15010 #Uniforme Valhalla Intermediário
+    InInventoryID 15010 = 0 #Uniforme Valhalla Intermediário
+    call {
+        [
+        log ===================================
+        log =Iniciando a quest eden do lvl 26
+        log ===================================
+        ]
+        do talk $.NpcNearLastBinId
+
+        #se vc não tiver feito a quest éden do lvl 12, a conversa é diferente
+        #de quem fez ela
+        if (&inventory(Uniforme Valhalla Iniciante) != -1) {
+            #se tiver o item da quest éden 12, use essa sequência
+            do talk resp 1
+        } else {
+            #se não tiver, use essa sequência
+            do talk resp 1
+            do talk resp 0
+            do talk resp 0
+        }
+
+        do conf -f o_que_estou_fazendo iniciando Quest Eden 26
+    }
 }
 
 automacro questEden40_iniciando {
     NpcNear /Boya/
     BaseLevel 40..49
-    InInventoryID 22508 = 1
+    InInventoryID 22508 = 1 #Emblema do Éden#
     ConfigKeyNot fazerQuestEden nao
     exclusive 1
     QuestInactive 7147
     ConfigKeyNot naSequenciaDeSalvamento true
     ConfigKeyNot quest_eden em_curso
     ConfigKeyNot quest_eden terminando
-    IsNotEquippedID armor 15011
-    InInventoryID 15011 = 0
-    call iniciandoQuestEden '0'
+    IsNotEquippedID armor 15011 #Uniforme Valhalla Avançado
+    InInventoryID 15011 = 0 #Uniforme Valhalla Avançado
+    call {
+        [
+        log ==================================
+        log =Iniciando a quest eden do lvl 40
+        log ==================================
+        ]
+        do talk $.NpcNearLastBinId
+
+        #se vc não tiver feito a quest éden do lvl 12, a conversa é diferente
+        #de quem fez ela
+        if (&inventory(Uniforme Valhalla Iniciante) != -1) {
+            #se tiver o item da quest éden 12, use essa sequência
+            do talk resp 0
+        } else {
+            #se não tiver, use essa sequência
+            do talk resp 1
+            do talk resp 0
+            do talk resp 0
+        }
+
+        do conf -f o_que_estou_fazendo iniciando Quest Eden 40
+    }
 }
 
 automacro questEden60_iniciando {
@@ -215,39 +251,28 @@ automacro questEden60_iniciando {
     BaseLevel 60..69
     ConfigKeyNot fazerQuestEden nao
     exclusive 1
-    InInventoryID 22508 = 1
+    InInventoryID 22508 = 1 #Emblema do Éden#
     JobID $parametrosClasses{idC2}, $parametrosClasses{idC2Alt}, $parametrosClasses{idC2T}, $parametrosClasses{idC2TAlt}, $parametrosClasses{idBC2}, $parametrosClasses{idBC2Alt}
     QuestInactive 7214
     ConfigKeyNot naSequenciaDeSalvamento true
     ConfigKeyNot quest_eden em_curso
     ConfigKeyNot quest_eden terminando
-    IsNotEquippedID armor 15031
-    InInventoryID 15031 = 0
-    call iniciandoQuestEden '0' '1'
-}
+    IsNotEquippedID armor 15031 #Armadura do Grupo Éden
+    InInventoryID 15031 = 0 #Armadura do Grupo Éden
+    call {
+        #aqui não importa se fizeram as outras quests ou não
+        #como o npc é diferente, fica de boas
+        [
+        log ===================================
+        log =Iniciando a quest eden do lvl 60
+        log ===================================
+        ]
+        do talk $.NpcNearLastBinId
+        do talk resp 0
+        do talk resp 1
 
-macro iniciandoQuestEden {
-    [
-    log ==========================
-    log =Iniciando a quest eden
-    log = parametro 0 : $.param[0]
-    log = parametro 1 : $.param[1]
-    log = parametro 2 : $.param[2]
-    log ===================================
-    ]
-    do talk $.NpcNearLastBinId
-    if (&defined($.param[0]) = 1) do talk resp $.param[0]
-    if (&defined($.param[1]) = 1) do talk resp $.param[1]
-    if (&defined($.param[2]) = 1) do talk resp $.param[2]
-
-    switch ($.lvl) {
-        case (<= 18) $lvlDaQuestEden = 12
-        case (<= 32) $lvlDaQuestEden = 26
-        case (<= 49) $lvlDaQuestEden = 40
-        case (<= 69) $lvlDaQuestEden = 60
+        do conf -f o_que_estou_fazendo iniciando Quest Eden 60
     }
-    do conf -f o_que_estou_fazendo iniciandoQuestEden$lvlDaQuestEden
-
 }
 
 automacro questEden_avisoIntermitenteNivel12 {
@@ -255,7 +280,16 @@ automacro questEden_avisoIntermitenteNivel12 {
     QuestActive 7128
     BaseLevel 12..15
     timeout 120
-    call avisoIntermitente '15'
+    call {
+        [
+        log ======================================
+        log comecei a quest eden, porém só vou
+        log fazer ela no lvl 15 ou acima!
+        log como não to nesse level ainda, vou upar.
+        log eu estou no lvl $.lvl agora
+        log ======================================
+        ]
+    }
 }
 
 #Lembrete: quest éden lvl 26 não precisa desse aviso interminente
@@ -266,7 +300,16 @@ automacro questEden_avisoIntermitenteNivel40 {
     QuestActive 7147
     BaseLevel 40..49
     timeout 180
-    call avisoIntermitente '50'
+    call {
+        [
+        log ======================================
+        log comecei a quest eden, porém só vou
+        log fazer ela no lvl 50 ou acima!
+        log como não to nesse level ainda, vou upar.
+        log eu estou no lvl $.lvl agora
+        log ======================================
+        ]
+    }
 }
 
 automacro questEden_avisoIntermitenteNivel60 {
@@ -274,18 +317,16 @@ automacro questEden_avisoIntermitenteNivel60 {
     QuestActive 7214
     BaseLevel 60..69
     timeout 240
-    call avisoIntermitente '70'
-}
-
-macro avisoIntermitente {        
-    [
-    log ======================================
-    log comecei a quest eden, porém só vou
-    log fazer ela no lvl $.param[0] ou acima!
-    log se eu nao tiver no lvl , eu vou upar.
-    log eu estou no lvl $.lvl agora
-    log ======================================
-    ]
+    call {
+        [
+        log ======================================
+        log comecei a quest eden, porém só vou
+        log fazer ela no lvl 70 ou acima!
+        log como não to nesse level ainda, vou upar.
+        log eu estou no lvl $.lvl agora
+        log ======================================
+        ]
+    }
 }
 
 
@@ -301,7 +342,7 @@ automacro questEden12_salvarNaKafra {
     call {
         do conf -f quest_eden em_curso
         call salvarNaCidade "morocc"
-        do conf -f o_que_estou_fazendo quest_eden12
+        do conf -f o_que_estou_fazendo quest eden 12
     }
 }
 
@@ -317,7 +358,7 @@ automacro questEden26_SalvarNaKafra {
     call {
         do conf -f quest_eden em_curso
         call salvarNaCidade "payon"
-        do conf -f o_que_estou_fazendo quest_eden26
+        do conf -f o_que_estou_fazendo quest eden 26
     }
 }
 
@@ -333,7 +374,7 @@ automacro questEden40_SalvarNaKafra {
     call {
         do conf -f quest_eden em_curso
         call salvarNaCidade "prontera"
-        do conf -f o_que_estou_fazendo quest_eden40
+        do conf -f o_que_estou_fazendo quest eden 40
     }
 }
 
@@ -349,7 +390,7 @@ automacro questEden60_SalvarNaKafra {
     call {
         do conf -f quest_eden em_curso
         call salvarNaCidade "comodo"
-        do conf -f o_que_estou_fazendo quest_eden60
+        do conf -f o_que_estou_fazendo quest eden 60
     }
 }
 
@@ -417,7 +458,7 @@ macro irNoMapa {
     do move $.param[0] $.param[1] &rand(1,5)
     do talk &npc($.param[1])
     if ($.param[0] = moc_fild11) do talk resp 1  #significa que ta na quest eden 12
-    if (&defined($.param[2]) = 1) { #evita de mostrar linhas vermelhas a toa de "variavel não existe"
+    if ( &defined($.param[2]) ) { #evita de mostrar linhas vermelhas a toa de "variavel não existe"
         do mconf $.param[2] 0 0 0
         do mconf $.param[3] 0 0 0
         do mconf $.param[4] 0 0 0
@@ -425,36 +466,36 @@ macro irNoMapa {
 }
 
 
-automacro questEden12_Caçar {
+automacro questEden12_Cacar {
     QuestHuntOngoing 7129 1009, 7130 1107, 7131 1001
     exclusive 1
     timeout 120
-    call caçarMonstros "moc_fild11" "12"
+    call cacarMonstros "moc_fild11" "12"
 }
 
-automacro questEden26_Caçar {
+automacro questEden26_Cacar {
     QuestHuntOngoing 7139 1076, 7140 1031
     exclusive 1
     timeout 180
-    call caçarMonstros "pay_dun00" "26"
+    call cacarMonstros "pay_dun00" "26"
 }
 
-automacro questEden40_Caçar {
+automacro questEden40_Cacar {
     QuestHuntOngoing 7148 1686, 7149 1023, 7150 1273
     exclusive 1
     timeout 180
     JobLevel != 50
-    call caçarMonstros "gef_fild10" "40"
+    call cacarMonstros "gef_fild10" "40"
 }
 
-automacro questEden60_Caçar {
+automacro questEden60_Cacar {
     QuestHuntOngoing 7215 1278, 7216 1278
     exclusive 1
     timeout 60
-    call caçarMonstros "beach_dun2" "60"
+    call cacarMonstros "beach_dun2" "60"
 }
 
-macro caçarMonstros {
+macro cacarMonstros {
     ## $.param[0] tem como valor o lockMap que o bot
     ## vai caçar os monstros
     if (&config(quest_eden) != em_curso) do conf -f quest_eden em_curso
@@ -482,7 +523,7 @@ automacro questEden60__JuntarItens {
         $qtdOmbreira = &invamount (7196)
         $qtdFolha = &invamount (7100)
         if (&config(quest_eden) != em_curso) do conf -f quest_eden em_curso
-        do conf -f o_que_estou_fazendo quest_eden60_coletandoItens
+        do conf -f o_que_estou_fazendo quest eden 60 coletandoItens
         
         if ( $qtdOmbreira < 5 ) {
             [
@@ -501,7 +542,7 @@ automacro questEden60__JuntarItens {
             log ===========================================
             ]
             do conf lockMap um_fild01
-            call voltarAtacar    
+            call voltarAtacar
         }
     }
 }
@@ -510,13 +551,13 @@ automacro questEden60__JuntarItens {
 #Romeo te passou uma última missão. Derrote Guerreiros Wootan e Dríades para conseguir alguns itens #
 #Traga 5 Ombreiras, 7 Folhas Afiadas #
 automacro questEden60__JaJunteiOsItens {
-    InInventoryID 7196 >= 5
-    InInventoryID 7100 >= 7
+    InInventoryID 7196 >= 5 #Ombreira
+    InInventoryID 7100 >= 7 #Folha Afiada
     QuestActive 7217
     CurrentHP > 80%
     exclusive 1
     call {
-        lock Eden60_JuntarItens
+        lock questEden60__JuntarItens
         [
         log ===================================
         log Ombreira e Folha Afiada coletada
@@ -532,7 +573,7 @@ automacro questEden60__JaJunteiOsItens {
     }
 }
 
-automacro questEden12_FinalizarCaças {
+automacro questEden12_FinalizarCacas {
     QuestHuntCompleted 7129 1009, 7130 1107, 7131 1001
     exclusive 1
     call {
@@ -546,11 +587,11 @@ automacro questEden12_FinalizarCaças {
         ]
         do move moc_fild11 &rand(181,183) &rand(254,256)
         do talk 0 #Cão falante
-        release Eden12Caçar
+        release questEden12_Cacar
     }
 }
 
-automacro questEden26_FinalizarCaças {
+automacro questEden26_FinalizarCacas {
     QuestHuntCompleted 7139 1076, 7140 1031
     exclusive 1
     call {
@@ -565,18 +606,12 @@ automacro questEden26_FinalizarCaças {
         do move pay_arche &rand(44,46) &rand(132,134)
         #do talknpc 41 136 c c c c c #Coral
         do talk &npc( 41 136 ) #Coral
-        release Eden26Caçar
+        release questEden26_Cacar
     }
 }
 
-automacro questEden40_FinalizarCaças {
+automacro questEden40_FinalizarCacas {
     QuestHuntCompleted 7148 1686, 7149 1023, 7150 1273
-    QuestInactive 2017
-    QuestInactive 2018
-    QuestInactive 2022
-    QuestInactive 2023
-    QuestInactive 2024
-    QuestInactive 2026
     exclusive 1
     call {
         call pararDeAtacar
@@ -590,11 +625,11 @@ automacro questEden40_FinalizarCaças {
         do move in_orcs01 38 175 &rand(1,4)
         #do talknpc 38 175 c c #Absalom#para07
         do talk 0 #Absalom
-        release Eden40Caçar
+        release questEden40_Cacar
     }
 }
 
-automacro questEden60_FinalizarCaças {
+automacro questEden60_FinalizarCacas {
     QuestHuntCompleted 7215 1278, 7216 1278
     exclusive 1
     call {
@@ -611,14 +646,14 @@ automacro questEden60_FinalizarCaças {
                 do move comodo &rand(174,176) &rand(344,346)
                 #do talknpc 173 354 c c c c c #Mémbro do grupo Éden#2n
                 do talk &npc( 173 354 )
-                release Eden60Caçar
+                release questEden60_Cacar
             }
 
             case (= 7216) { #golem2
                 do move um_fild01 &rand(36,38) &rand(277,279)
                 #do talknpc 34 280 c c c c #Romeo#2nd02
                 do talk &npc( 34 280 )
-                release Eden60Caçar
+                release questEden60_Cacar
             }
         }
     }
@@ -649,7 +684,7 @@ automacro questEden_voltarDoMapaMoverPerto {
         log ===========================================
         ]
         
-        do conf -f o_que_estou_fazendo quest_eden_completada_voltando_para_pegar_equips
+        do conf -f o_que_estou_fazendo quest eden completada voltando para pegar equips
         call moverPertoDosNpcEden
     }
 }
@@ -705,7 +740,7 @@ automacro questEden_voltarDoMapa {
                 do talk &npc(/Boya/)
                 do mconf 1023 1 0 0 #Guerreiro Orc
                 do mconf 1686 1 0 0 #Filhote de Orc
-                do mconf 1273 1 0 0 #Senhora Orc 
+                do mconf 1273 1 0 0 #Senhora Orc
             }
 
             case (= 7218) { #eden 60
@@ -747,7 +782,7 @@ automacro questEden12e26e40_PegandoEquips {
         log =falando com o Mihael pra ganhar meus equips
         log ===========================================
         ]
-        do conf -f o_que_estou_fazendo quest_eden pegandoMeusEquipsDeDireito
+        do conf -f o_que_estou_fazendo quest eden pegando Meus Equips de Direito
         do talk $.NpcNearLastBinId
         do talk resp 0
         do talk resp 1
@@ -771,7 +806,13 @@ automacro questEden12e26e40_acabeiDePegarEquips {
     SimpleHookEvent item_gathered
     call {
         do conf -f quest_eden none
-        do conf -f o_que_estou_fazendo acabeiDeTerminarQuestEden
+        do conf -f o_que_estou_fazendo acabei de Terminar Quest Eden
+        
+        release equipandoArmaEden
+        release equipandoArmaduraEden
+        release equipandoBotaEden
+        release equipandoChapeuEden
+        release equipandoCapaEden
     }
 }
 
@@ -779,7 +820,6 @@ automacro questEden60_PegandoEquips {
     ConfigKey quest_eden terminando
     BaseLevel 70..98
     timeout 120
-    IsNotEquippedID armor 15031
     NpcNear /Ferreiro|smith/i
     call {
         [
@@ -787,6 +827,7 @@ automacro questEden60_PegandoEquips {
         log =falando com o ferreiro pra ganhar meus equips
         log ===========================================
         ]
+        do conf -f o_que_estou_fazendo quest eden 60 pegando Meus Equips de Direito
         #do talknpc 111 83 c r2 c c r1 #Ferreiro Torhen#2nd10
         do talk $.NpcNearLastBinId
         do talk resp 2
@@ -799,113 +840,200 @@ automacro questEden60_acabeiDePegarEquips {
     ConfigKey quest_eden terminando
     BaseLevel 70..98
     exclusive 1
-    IsNotEquippedID armor 15031
     NpcNear /Ferreiro|smith/i
     SimpleHookEvent item_gathered
     call {
         do conf -f quest_eden none
-        do conf -f o_que_estou_fazendo acabeiDeTerminarQuestEden60
+        do conf -f o_que_estou_fazendo acabei De Terminar Quest Eden 60
+        release equipandoArmaEden
+        release equipandoArmaduraEden
+        release equipandoBotaEden
+        release equipandoChapeuEden
+        release equipandoCapaEden
     }
 }
 
-automacro questEden12_Equipando {
-    IsNotEquippedID armor 15009
-    InInventoryID 15009 = 1
-    BaseLevel 12..25
-    exclusive 1
+automacro equipandoArmaEden {
+    BaseLevel 1..98 #não quero checar por armas no lvl 99, pode dar treta
+    JobIDNot 0 #aprendiz
+    JobIDNot 4023 # baby aprendiz
     run-once 1
-    call {
-        [
-        log ===========================================
-        log =equipando os itens de eden lvl 12
-        log ===========================================
-        ]
-        $check = pegarIndiceDoEquipamentoPeloId("robe", 2560) #Capa Valhalla
-        if ($check != -1) do eq $check
-        $check = pegarIndiceDoEquipamentoPeloId("topHead", 5583) #Chapeu valhalla
-        if ($check != -1) do eq $check
-        $check = pegarIndiceDoEquipamentoPeloId("shoes", 2456) #Botas Valhalla Iniciante
-        if ($check != -1) do eq $check
-        $check = pegarIndiceDoEquipamentoPeloId("armor", 15009) #Uniforme Valhalla Iniciante
-        if ($check != -1) do eq $check
-    }
-}
-
-automacro questEden26_Equipando {
-    IsNotEquippedID armor 15010
-    InInventoryID 15010 = 1
-    BaseLevel 26..49
     exclusive 1
-    run-once 1
-    call {
-        [
-        log ===========================================
-        log =equipando os itens de eden lvl 26
-        log ===========================================
-        ]
+    call equiparArma
+}
 
-        $check = pegarIndiceDoEquipamentoPeloId("shoes", 2457) #Botas Valhalla Intermediárias
-        if ($check != -1) do eq $check
-        $check = pegarIndiceDoEquipamentoPeloId("rightHand", "$parametrosQuestEden{IDarmaIniciante}") #Arma Valhalla Iniciante
-        if ($check != -1) do eq $check
-        $check = pegarIndiceDoEquipamentoPeloId("armor", 15010) #Uniforme Valhalla Intermediário
-        if ($check != -1) do eq $check
+macro equiparArma {
+    
+    #se tiver alguma arma equipada e ela não for do eden ou iniciante, então não faça nada
+    if (checarSlot("rightHand") = "tem equip" && !pegarNomeDoItemEquipado(rightHand) =~ /Iniciante|Valhalla|Éden/i) {
+        stop
+    }
+    
+    if ($.lvl >= 60 && &inventory($parametrosQuestEden{IDarmaEden}) != -1) {
+        do eq &inventory($parametrosQuestEden{IDarmaEden})
+        
+    } elsif ($.lvl >= 40 && &inventory($parametrosQuestEden{IDarmaIntermediario}) != -1) {
+        do eq &inventory($parametrosQuestEden{IDarmaIntermediario})
+        
+    } elsif ($.lvl >= 26 && &inventory($parametrosQuestEden{IDarmaIniciante}) != -1) {
+        do eq &inventory($parametrosQuestEden{IDarmaIniciante})
+        
+    } elsif ($.lvl >= 1 && &inventory($parametrosQuestClasse1{equipeIniciante}) != -1) {
+        do eq &inventory($parametrosQuestClasse1{equipeIniciante})
+        
+    } else {
+        if (checarSlot("rightHand") = "ta vazio") {
+            [
+            error Erro: não foi encontrado nenhuma arma éden para equipar
+            error Seu bot ta batendo na mao
+            error A eventMacro não pode fazer nada a respeito disso
+            ]
+        } else {
+            [
+            error Erro desconhecido ao tentar encontrar uma arma para equipar
+            error Você está com " pegarNomeDoItemEquipado(rightHand) " equipado, não deveria aparecer esse erro
+            error Caso você esteja lendo isso, contate os criadores da eventMacro
+            ]
+            call informacoes
+        }
     }
 }
 
-automacro questEden40_Equipando {
-    IsNotEquippedID armor 15011
-    InInventoryID 15011 = 1
-    BaseLevel 40..59
+automacro equipandoArmaduraEden {
+    BaseLevel 12..98 #não quero checar por armaduras no lvl 99, pode dar treta
+    JobIDNot 0 #aprendiz
+    JobIDNot 4023 # baby aprendiz
+    run-once 1
     exclusive 1
-    run-once 1
-    call {
-        [
-        log ===========================================
-        log =equipando os itens de eden lvl 40
-        log ===========================================
-        ]
-        $check = pegarIndiceDoEquipamentoPeloId("shoes", 2458) #Botas Valhalla Avançadas
-        if ($check != -1) do eq $check
-        $check = pegarIndiceDoEquipamentoPeloId("rightHand", "$parametrosQuestEden{IDarmaIntermediario}") #Arma Valhalla Intermediária
-        if ($check != -1) do eq $check
-        $check = pegarIndiceDoEquipamentoPeloId("armor", 15011) #Uniforme Valhalla Avançado
-        if ($check != -1) do eq $check
-    }
+    call equiparArmadura
 }
 
-automacro questEden60_Equipando {
-    IsNotEquippedID robe 2571
-    IsNotEquippedID topHead 18514
-    IsNotEquippedID shoes 2473
-    IsNotEquippedID rightHand $parametrosQuestEden{IDarmaEden}
-    IsNotEquippedID armor 15031
-    InInventoryID 2571  = 1
-    InInventoryID 18514 = 1
-    InInventoryID 2473  = 1
-    InInventoryID 15031 = 1
+macro equiparArmadura {
+    
+    #se tiver alguma armadura equipada e ela não for do eden ou iniciante, então não faça nada
+    if (checarSlot(armor) = "tem equip" && !pegarNomeDoItemEquipado(armor) =~ /Iniciante|Valhalla|Éden/i) {
+        stop
+    }
+    
+    #15009) #Uniforme Valhalla Iniciante
+    #15010) #Uniforme Valhalla Intermediário
+    #15011) #Uniforme Valhalla Avançado
+    #15031) #Armadura_do_Grupo_Éden#
+    if ($.lvl >= 60 && &inventory(15031) != -1) { #Armadura_do_Grupo_Éden#
+        log = Vou equipar armadura do lvl 60+
+        do eq &inventory(15031) #Armadura_do_Grupo_Éden#
+        
+    } elsif ($.lvl >= 40 && &inventory(15011) != -1) { #Uniforme Valhalla Avançado
+        log = Vou equipar armadura do lvl 40+
+        do eq &inventory(15011) #Uniforme Valhalla Avançado
+        
+    } elsif ($.lvl >= 26 && &inventory(15010) != -1) { #Uniforme Valhalla Intermediário
+        log = Vou equipar armadura do lvl 26+
+        do eq &inventory(15010) #Uniforme Valhalla Intermediário
+        
+    } elsif ($.lvl >= 12 && &inventory(15009) != -1) { #Uniforme Valhalla Iniciante
+        log = Vou equipar armadura do lvl 12+ que não é eden mas é bom
+        do eq &inventory(15009) #Uniforme Valhalla Iniciante
+        
+    }
+    #sem um else aqui, porque se o slot tiver vazio, e não tiver nenhum do éden, fodas, ninguém liga
+}
+
+automacro equipandoBotaEden {
+    BaseLevel 12..98 #não quero checar por armas no lvl 99, pode dar treta
+    JobIDNot 0 #aprendiz
+    JobIDNot 4023 # baby aprendiz
     run-once 1
-    BaseLevel 60..98
     exclusive 1
-    call {
-        [
-        log ===========================================
-        log =equipando os itens de eden level 60
-        log ===========================================
-        ]
-        $check = pegarIndiceDoEquipamentoPeloId("robe", 2571) #Capa II do Grupo Eden
-        if ($check != -1) do eq $check
-        $check = pegarIndiceDoEquipamentoPeloId("topHead", 18514) #Chapéu_II_do_Grupo_Éden#
-        if ($check != -1) do eq $check
-        $check = pegarIndiceDoEquipamentoPeloId("shoes", 2473) ##Botas_IV_do_Grupo_Éden#
-        if ($check != -1) do eq $check
-        $check = pegarIndiceDoEquipamentoPeloId("rightHand","$parametrosQuestEden{IDarmaEden}") #Arma do Grupo Eden#
-        if ($check != -1) do eq $check
-        $check = pegarIndiceDoEquipamentoPeloId("armor", 15031) #Armadura_do_Grupo_Éden#
-        if ($check != -1) do eq $check
-    }
+    call equiparBota
 }
 
+macro equiparBota {
+    
+    #se tiver alguma bota equipada e ela não for do eden ou iniciante, então não faça nada
+    if (checarSlot(rightHand) = "tem equip" && !pegarNomeDoItemEquipado(rightHand) =~ /Iniciante|Valhalla|Éden/i) {
+        stop
+    }
+    
+    # 2456) #Botas Valhalla Iniciante
+    # 2457) #Botas Valhalla Intermediárias
+    # 2458) #Botas Valhalla Avançadas
+    # 2473) ##Botas_IV_do_Grupo_Éden#
+    if ($.lvl >= 60 && &inventory(2473) != -1) { ##Botas_IV_do_Grupo_Éden#
+        log = Vou equipar bota do lvl 60+
+        do eq &inventory(2473) ##Botas_IV_do_Grupo_Éden#
+        
+    } elsif ($.lvl >= 40 && &inventory(2458) != -1) { #Botas Valhalla Avançadas
+        log = Vou equipar bota do lvl 40+
+        do eq &inventory(2458) #Botas Valhalla Avançadas
+        
+    } elsif ($.lvl >= 26 && &inventory(2457) != -1) { #Botas Valhalla Intermediárias
+        log = Vou equipar bota do lvl 26+
+        do eq &inventory(2457) #Botas Valhalla Intermediárias
+        
+    } elsif ($.lvl >= 12 && &inventory(2456) != -1) { #Botas Valhalla Iniciante
+        log = Vou equipar bota do lvl 12+ que não é eden mas é bom
+        do eq &inventory(2456) #Botas Valhalla Iniciante
+        
+    }
+    #sem um else aqui, porque se o slot tiver vazio, e não tiver nenhum do éden, fodas, ninguém liga
+}
+
+automacro equipandoChapeuEden {
+    BaseLevel 12..98 #não quero checar por armas no lvl 99, pode dar treta
+    JobIDNot 0 #aprendiz
+    JobIDNot 4023 # baby aprendiz
+    run-once 1
+    exclusive 1
+    call equiparChapeu
+}
+
+macro equiparChapeu {
+    
+    #se tiver algum chapeu equipado e ele não for do eden ou iniciante, então não faça nada
+    if (checarSlot(topHead) = "tem equip" && !pegarNomeDoItemEquipado(topHead) =~ /Iniciante|Valhalla|Éden/i) {
+        stop
+    }
+    
+    if ($.lvl >= 60 && &inventory(18514) != -1) { #Chapéu_II_do_Grupo_Éden#
+        log = Vou equipar chapeu do lvl 60+
+        do eq &inventory(18514) #Chapéu_II_do_Grupo_Éden#
+        
+    } elsif ($.lvl >= 12 && &inventory(5583) != -1) { #Chapeu Valhalla
+        log = Vou equipar chapeu do lvl 12+
+        do eq &inventory(5583) #Chapeu Valhalla
+        
+    }
+    #sem um else aqui, porque se o slot tiver vazio, e não tiver nenhum do éden, fodas, ninguém liga
+}
+
+automacro equipandoCapaEden {
+    BaseLevel 12..98 #não quero checar por armas no lvl 99, pode dar treta
+    JobIDNot 0 #aprendiz
+    JobIDNot 4023 # baby aprendiz
+    run-once 1
+    exclusive 1
+    call equiparCapa
+}
+
+macro equiparCapa {
+    
+    #se tiver alguma capa equipada e ela não for do eden ou iniciante, então não faça nada
+    if (checarSlot(robe) = "tem equip" && !pegarNomeDoItemEquipado(robe) =~ /Iniciante|Valhalla|Éden/i) {
+        stop
+    }
+    
+    if ($.lvl >= 60 && &inventory(2571)  != -1) { #Capa II do Grupo Eden
+        log = Vou equipar chapeu do lvl 60+
+        do eq &inventory(2571) #Capa II do Grupo Eden
+        
+    } elsif ($.lvl >= 12 && &inventory(2560) != -1) { #Capa Valhalla
+        log = Vou equipar chapeu do lvl 12+
+        do eq &inventory(2560) #Capa Valhalla
+        
+    }
+    #sem um else aqui, porque se o slot tiver vazio, e não tiver nenhum do éden, fodas, ninguém liga
+}
 
 #
 #

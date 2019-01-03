@@ -33,3 +33,12 @@ deploy:
   file_glob: true
   file: dist/*
   skip_cleanup: true
+  
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/e781a175095502e5c314
+    on_success: always  
+    on_failure: always  
+    on_start: always    
+

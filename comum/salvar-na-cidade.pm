@@ -4,7 +4,7 @@ macro salvarNaCidade {
     if (&config(master) =~ /Valhalla/ ) {
         do conf -f saveMap_sequenciaPraArmazenar r1 r0
     } else  {
-        do conf -f saveMap_sequenciaPraArmazenar r1 
+        do conf -f saveMap_sequenciaPraArmazenar r1
     }
     switch ($.param[0]) {
         case (=~ /einbroch/i ) {
@@ -35,7 +35,7 @@ macro salvarNaCidade {
             do conf -f saveMap_desejado comodo
             do conf -f saveMap_posicaoKafra 195 150
             do conf -f saveMap_posicaoNpcVenda cmd_in01 79 182
-            do conf -f saveMap_posicaoNpcPraPocao cmd_in01 79 182
+            do conf -f saveMap_posicaoNpcPraPocao moc_ruins 114 63
         }
         case (=~ /prontera/i ) {
             do conf -f saveMap_desejado prontera
@@ -111,12 +111,33 @@ macro salvarNaCidade {
 automacro definirVariavelSaveMap {
     exclusive 1
     run-once 1
+    ConfigKeyNot saveMap_desejado           none
+    ConfigKeyNot saveMap_posicaoKafra       none
+    ConfigKeyNot saveMap_posicaoNpcVenda    none
     ConfigKey naSequenciaDeSalvamento true
     priority -4
     CheckOnAI auto, manual
     call {
         $saveMap = &config(saveMap_desejado)
         do ai manual
+    }
+}
+
+automacro salvarNaCidade_bugged {
+    exclusive 1
+    ConfigKey saveMap_desejado           none
+    ConfigKey saveMap_posicaoKafra       none
+    ConfigKey saveMap_posicaoNpcVenda    none
+    ConfigKey naSequenciaDeSalvamento true
+    CheckOnAI auto, manual
+    call {
+        [
+        log ===================================
+        log = tem algum bug bem sério
+        log = tentando resolver
+        log ===================================
+        ]
+        do conf -f naSequenciaDeSalvamento false
     }
 }
 
@@ -209,7 +230,7 @@ automacro SalvoNaKafra {
         if (&config(storageAuto) != 1) do conf storageAuto 1
         if (&config(sellAuto) != 1) do conf sellAuto 1
         if (&config(storageAuto_npc_type) != 3) do conf storageAuto_npc_type 3
-        if (&config(storageAuto_npc_steps) != &config(saveMap_sequenciaPraArmazenar)) do conf storageAuto_npc_steps &config(saveMap_sequenciaPraArmazenar)
+        do conf storageAuto_npc_steps &config(saveMap_sequenciaPraArmazenar) if (&config(storageAuto_npc_steps) != &config(saveMap_sequenciaPraArmazenar))
         do conf saveMap $saveMap
         do conf storageAuto_npc $saveMap &config(saveMap_posicaoKafra)
         do conf sellAuto_npc &config(saveMap_posicaoNpcVenda)
@@ -253,6 +274,16 @@ automacro SalvoNaKafra {
         log ================================
         ]
         do conf -f o_que_estou_fazendo acabeiDeSalvarNaKafraDe $saveMap
+    }
+}
+
+automacro saveMapNone {
+    ConfigKey saveMap none
+    exclusive 1
+    JobIDNot 0
+    JobIDNot 4023
+    call {
+        do conf -f saveMap indefinido
     }
 }
 #

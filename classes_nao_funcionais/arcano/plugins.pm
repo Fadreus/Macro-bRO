@@ -1,0 +1,3 @@
+sub inicializarPlugins {
+    verificarEInstalarPlugin("enhancedCasting");
+}

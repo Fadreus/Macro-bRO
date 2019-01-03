@@ -1,6 +1,6 @@
-﻿#Digite no console do eventMacro 
+﻿#Digite no console do eventMacro
 #eventMacro aeroplano_junoPara --cidade
-#Pode ser tambem 
+#Pode ser tambem
 #eventMacro aeroplano_einbrochPara --cidade
 #ou
 #eventMacro aeroplano_junoPara --cidade
@@ -14,7 +14,7 @@ macro aeroplano_junoPara {
             do conf -f aeroplano1 izlude
             do conf -f aeroplano2 none
         }
-        case (=~ /rachel/i){
+        case (=~ /rachel/i) {
             do conf -f aeroplano1 rachel
             do conf -f aeroplano2 none
         }
@@ -34,7 +34,8 @@ macro aeroplano_junoPara {
             log VOCÊ QUER IR DE JUNO PRA JUNO?
             log PORQUE VOCÊ FARIA ISSO?
             stop
-        } else {
+        }
+        else {
             [
             log Você digitou um nome inválido, por favor tente novamente
             log Os valores podem ser:
@@ -47,10 +48,10 @@ macro aeroplano_junoPara {
     }
     $varAeroplano1 = &config(aeroplano1)
     $varAeroplano2 = &config(aeroplano2)
-    do conf -f aeroplano_macroChamada aeroplano_junoPara
+    do conf -f aeroplano_macroChamada aeroplano_junoPara "$.param[0]"
     do conf lockMap none
     do ai manual
-    if ($.map = airplane || $.map = airplane_01) {
+    if ($.map ~ airplane, airplane_01) {
         log ja estamos no aeroplano, só esperar agora
     } else {
         if ( $.map != yuno ) do move yuno
@@ -101,10 +102,10 @@ macro aeroplano_einbrochPara {
     }
     $varAeroplano1 = &config(aeroplano1)
     $varAeroplano2 = &config(aeroplano2)
-    do conf -f aeroplano_macroChamada aeroplano_einbrochPara
+    do conf -f aeroplano_macroChamada aeroplano_einbrochPara "$.param[0]"
     do conf lockMap none
     do ai manual
-    if ($.map = airplane || $.map = airplane_01) {
+    if ($.map ~ airplane, airplane_01) {
         log ja estamos no aeroplano, só esperar agora
     } else {
         do move airplane
@@ -156,10 +157,10 @@ macro aeroplano_rachelPara {
     }
     $varAeroplano1 = &config(aeroplano1)
     $varAeroplano2 = &config(aeroplano2)
-    do conf -f aeroplano_macroChamada aeroplano_rachelPara
+    do conf -f aeroplano_macroChamada aeroplano_rachelPara "$.param[0]"
     do conf lockMap none
     do ai manual
-    if ( $.map = airplane || $.map = airplane_01) {
+    if ( $.map ~ airplane, airplane_01) {
         log ja estamos no aeroplano, só esperar agora
     } else {
         do move ra_fild12 294 208
@@ -212,15 +213,14 @@ macro aeroplano_izludePara {
     }
     $varAeroplano1 = &config(aeroplano1)
     $varAeroplano2 = &config(aeroplano2)
-    do conf -f aeroplano_macroChamada aeroplano_izludePara
+    do conf -f aeroplano_macroChamada aeroplano_izludePara "$.param[0]"
     do conf lockMap none
     do ai manual
-    if ( $.map = airplane || $.map = airplane_01) {
+    if ( $.map ~ airplane, airplane_01) {
         log ja estamos no aeroplano, só esperar agora
     } else {
         do move izlude 206 55
-        do talk resp 0
-        do talk resp 0
+        do talknpc 206 55
         log $varAeroplano1, $varAeroplano2
     }
 }
@@ -269,16 +269,70 @@ macro aeroplano_hugelPara {
     }
     $varAeroplano1 = &config(aeroplano1)
     $varAeroplano2 = &config(aeroplano2)
-    do conf -f aeroplano_macroChamada aeroplano_hugelPara
+    do conf -f aeroplano_macroChamada aeroplano_hugelPara "$.param[0]"
     do conf lockMap none
     do ai manual
-    if ( $.map = airplane || $.map = airplane_01) {
+    if ( $.map ~ airplane, airplane_01) {
         log ja estamos no aeroplano, só esperar agora
     } else {
         do move hugel 178 142
         do talk resp 0
         log $varAeroplano1, $varAeroplano2
     }
+}
+
+macro aeroplano_lighthalzenPara {
+    set exclusive 1
+    log Vamos ir de Eibroch para $.param[0]
+    #se a cidade for juno hugel ou lighthalzen ele só pega 1 aeroplano
+    # se for outra cidade, ele pega os dois aeroplanos
+    switch ($.param[0]) {
+        case (=~ /izlude/i) {
+            do conf -f aeroplano1 izlude
+            do conf -f aeroplano2 juno
+        }
+        case (=~ /rachel/i) {
+            do conf -f aeroplano1 rachel
+            do conf -f aeroplano2 juno
+        }
+        case (=~ /hugel/i) {
+            do conf -f aeroplano1 none
+            do conf -f aeroplano2 hugel
+        }
+        case (=~ /lighthalzen/i) {
+            log VOCÊ QUER IR DE EINBROCH PRA EINBROCH?
+            log PORQUE VOCÊ FARIA ISSO?
+            stop
+        }
+        case (=~ /einbroch/i) {
+            do conf -f aeroplano1 none
+            do conf -f aeroplano2 einbroch
+        }
+        case (=~ /[jy]uno/) {
+            do conf -f aeroplano1 none
+            do conf -f aeroplano2 juno
+        }
+        else {
+            [
+            log Você digitou um nome inválido, por favor tente novamente
+            log Os valores podem ser izlude , rachel , juno ou yuno ,
+            log hugel , lighthalzen ou einbroch
+            log pode ser com letra maiuscula ou sem
+            ]
+            stop
+        }
+    }
+    $varAeroplano1 = &config(aeroplano1)
+    $varAeroplano2 = &config(aeroplano2)
+    do conf -f aeroplano_macroChamada aeroplano_lighthalzenPara "$.param[0]"
+    do conf lockMap none
+    do ai manual
+    if ($.map ~ airplane, airplane_01) {
+        log ja estamos no aeroplano, só esperar agora
+    } else {
+        do move airplane
+    }
+    log $varAeroplano1, $varAeroplano2
 }
 
 automacro dentroDoAeroplanoBugged {
@@ -299,9 +353,14 @@ automacro usarAeroplanoBugged {
         #se essa macro se ativar, significa que a AI ta no automático
         #quando deveria estar no manual pra todas as outras macros se ativarem
         #aconteceria se no meio do uso da macro (mover ate la ou dentro do aeroplano)
-        #o openkore foss fechado
+        #o openkore fosse fechado
         do ai manual
         $macro = &config(aeroplano_macroChamada)
+        [
+        log ===================================
+        log = chamando a macro $macro
+        log ===================================
+        ]
         call $macro
     }
 }
@@ -312,7 +371,7 @@ automacro dentroDoAeroplanoInternacional_checagem {
     CheckOnAI manual
     timeout 50
     call {
-        if (&defined($varAeroplano1) = 0) {
+        if (! &defined($varAeroplano1) ) {
             $varAeroplano1 = &config(aeroplano1)
         }
         [

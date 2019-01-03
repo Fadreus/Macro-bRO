@@ -1,7 +1,7 @@
 sub inicializarParametrosQuestClasse2 {
-    my ($classe) = @_;
+    my ($manterOuGuardar) = @_;
     my %items = (
-        #Possibilidade 1    
+        #Possibilidade 1
         920 => "5 1 0", #Garras de Lobo
         1019 => "5 1 0", #Troncos
         509 => "3 1 0", #Ervas Brancas
@@ -31,15 +31,15 @@ sub inicializarParametrosQuestClasse2 {
         938 => "1 1 0", #Mucos Pegajosos
         948 => "1 1 0", #Patas de Urso
     
-        #Possibilidade 7     
+        #Possibilidade 7
         1027 => "2 1 0", #Espinhos de Porco-Espinho
         942 => "1 1 0", #Caudas de Yoyo
         1026 => "1 1 0" #Avelãs
     );
     Commands::run("conf -f questc2_implementada true");
     foreach $key (keys %items) {
-        if ($classe == 1) { 
-            Commands::run("iconf $key $items{$key}") 
+        if ($manterOuGuardar eq "manter") {
+            Commands::run("iconf $key $items{$key}")
         } else {
             Commands::run("iconf $key 0 1 0")
         }
@@ -179,51 +179,16 @@ automacro questCacador_coletarItens_possibilidade1 {
     timeout 120
     ConfigKeyNot passo_quest_cacador indo entregar itens
     call {
-        $qtdItem1 = &invamount(Garras de Lobo)
-        $qtdItem2 = &invamount(Troncos)
-        $qtdItem3 = &invamount(Ervas Brancas)
-
-        call voltarAtacar
-
-        if ( $qtdItem1 < 5 ) {
-            do conf lockMap moc_fild11
-            #esses dois o bot não pode e nem precisa atacar
-            do mconf Condor 0
-            do mconf Escorpião 0
-        } elsif ( $qtdItem1 >= 5 && $qtdItem2 < 5 ) {
-            do conf lockMap pay_fild10
-            #esses dois o bot não pode e nem precisa atacar
-            do mconf Selvagem 0
-            do mconf 1494 0 #besouro que não sei o nome exato
-        } elsif ( $qtdItem1 >= 5 && $qtdItem2 >= 5 && $qtdItem3 < 3) {
-            do conf lockMap beach_dun3
-            #esses tres o bot não pode e nem precisa atacar
-            do mconf Hidra 0
-            do mconf Megalodon 0
-            do mconf Nereida 0 -8
-        } elsif ( $qtdItem1 >= 5 && $qtdItem2 >= 5 && $qtdItem3 >= 3) {
-            [
-            log ================================
-            log Coletei todos os itens, indo Entregar!
-            log ================================
-            ]
-            
-            do mconf Condor 1
-            do mconf Escorpião 1
-            do mconf Selvagem 1
-            do mconf 1494 1 #besouro que não sei o nome exato
-            do mconf Hidra 1
-            do mconf Megalodon 1
-            do mconf Nereida 1
-            do conf -f passo_quest_cacador indo entregar itens
-        } else {
-            [
-            log ====================================================
-            log Deveria estar coletando 5 Garras do Lobo, 5 Troncos e 3 Ervas Brancas agora
-            log Mas algo deu errado... reporte aos criadores dessa eventMacro
-            log ====================================================
-            ]
-        }
+        $item1{ID}      = 920 #Garra de Lobo
+        $item1{lockMap} = moc_fild03
+        
+        $item2{ID}      = 1019 #Tronco
+        $item2{lockMap} = pay_fild10
+        
+        $item3{ID}      = 509 #Erva Branca
+        $item3{lockMap} = orcsdun01
+        
+        call decidirLockMapProItem
     }
 }
 
@@ -236,33 +201,16 @@ automacro questCacador_coletarItens_possibilidade2 {
     timeout 120
     ConfigKeyNot passo_quest_cacador indo entregar itens
     call {
-        $qtdItem1 = &invamount(Bico de Ave)
-        $qtdItem2 = &invamount(Osso)
-        $qtdItem3 = &invamount(Erva Verde)
-
-        call voltarAtacar
-
-        if ( $qtdItem1 < 3 ) {
-            do conf lockMap moc_fild01
-        } elsif ( $qtdItem1 >= 3 && $qtdItem2 < 5 ) {
-            do conf lockMap pay_dun01
-        } elsif ( $qtdItem1 >= 3 && $qtdItem2 >= 5 && $qtdItem3 < 3) {
-            do conf lockMap prt_fild08
-        } elsif ( $qtdItem1 >= 3 && $qtdItem2 >= 5 && $qtdItem3 >= 3) {
-            [
-            log ================================
-            log Coletei todos os itens, indo Entregar!
-            log ================================
-            ]
-            do conf -f passo_quest_cacador indo entregar itens
-        } else {
-            [
-            log ====================================================
-            log Deveria estar coletando 3 Bicos de Ave, 5 Ossos e 3 Ervas Verdes agora
-            log Mas algo deu errado... reporte aos criadores dessa eventMacro
-            log ====================================================
-            ]
-        }
+        $item1{ID}      = 925 #Bico de Ave
+        $item1{lockMap} = moc_fild01
+        
+        $item2{ID}      = 932 #Osso
+        $item1{lockMap} = pay_dun01
+        
+        $item3{ID}      = 511 #Erva Verde
+        $item1{lockMap} = prt_fild08
+        
+        call decidirLockMapProItem
     }
 }
 
@@ -275,33 +223,17 @@ automacro questCacador_coletarItens_possibilidade3 {
     timeout 120
     ConfigKeyNot passo_quest_cacador indo entregar itens
     call {
-        $qtdItem1 = &invamount(Canino Venenoso)
-        $qtdItem2 = &invamount(Erva Vermelha)
-        $qtdItem3 = &invamount(Couro de Animal)
-
-        call voltarAtacar
-
-        if ( $qtdItem1 < 3 ) {
-            do conf lockMap pay_fild08
-        } elsif ( $qtdItem1 >= 3 && $qtdItem2 < 5 ) {
-            do conf lockMap mjolnir_09
-        } elsif ( $qtdItem1 >= 3 && $qtdItem2 >= 5 && $qtdItem3 < 3) {
-            do conf lockMap pay_fild08
-        } elsif ( $qtdItem1 >= 3 && $qtdItem2 >= 5 && $qtdItem3 >= 3) {
-            [
-            log ================================
-            log Coletei todos os itens, indo Entregar!
-            log ================================
-            ]
-            do conf -f passo_quest_cacador indo entregar itens
-        } else {
-            [
-            log ====================================================
-            log Deveria estar coletando 3 Caninos Venenosos, 3 Couros de Animal e 5 Ervas Vermelhas agora
-            log Mas algo deu errado... reporte aos criadores dessa eventMacro
-            log ====================================================
-            ]
-        }
+        
+        $item1{ID}      = 937 #Canino Venenoso
+        $item1{lockMap} = pay_fild08
+        
+        $item2{ID}      = 507 #Erva Vermelha
+        $item1{lockMap} = mjolnir_09
+        
+        $item3{ID}      = 919 #Couro de Animal
+        $item1{lockMap} = pay_fild08 # TODO: esse mapa ta errado com certeza
+        
+        call decidirLockMapProItem
     }
 }
 
@@ -314,37 +246,16 @@ automacro questCacador_coletarItens_possibilidade4 {
     timeout 120
     ConfigKeyNot passo_quest_cacador indo entregar itens
     call {
-        $qtdItem1 = &invamount(Chifre de Dokebi)
-        $qtdItem2 = &invamount(Pedaço de Casca de Ovo)
-        $qtdItem3 = &invamount(Felpa)
-
-        call voltarAtacar
-
-        if ( $qtdItem1 < 3 ) {
-            #VAI TER QUE COMPRAR O CHIFRE USANDO O BETTERSHOPPER
-            #PIOR QUE ISSO VAIDAR TRABALHO HAHAHA
-            #MAS VOU COLOCAR O MAPA PRA TENTAR DROPAR E FODAS
-            #QUEM SABE UM DIA EU FAÇA
-            do conf lockMap pay_dun04
-        } elsif ( $qtdItem1 >= 3 && $qtdItem2 < 3 ) {
-            do conf lockMap pay_dun01
-        } elsif ( $qtdItem1 >= 3 && $qtdItem2 >= 3 && $qtdItem3 < 10) {
-            do conf lockMap prt_fild08
-        } elsif ( $qtdItem1 >= 3 && $qtdItem2 >= 3 && $qtdItem3 >= 10) {
-            [
-            log ================================
-            log Coletei todos os itens, indo Entregar!
-            log ================================
-            ]
-            do conf -f passo_quest_cacador indo entregar itens
-        } else {
-            [
-            log ====================================================
-            log Deveria estar coletando 3 Chifres de Dokebi, 3 Pedaços de Casca de Ovo e 10 Felpas agora
-            log Mas algo deu errado... reporte aos criadores dessa eventMacro
-            log ====================================================
-            ]
-        }
+        $item1{ID}      = 1021 #Chifre de Dokebi
+        $item1{lockMap} = pay_dun04 # TODO: será que o bot consegue chegar nesse mapa? *pensativo*
+        
+        $item2{ID}      = 7032 #Pedaço de Casca de Ovo
+        $item1{lockMap} = pay_dun01
+        
+        $item3{ID}      = 914 #Felpa
+        $item1{lockMap} = prt_fild08
+        
+        call decidirLockMapProItem
     }
 }
 
@@ -357,33 +268,16 @@ automacro questCacador_coletarItens_possibilidade5 {
     timeout 120
     ConfigKeyNot passo_quest_cacador indo entregar itens
     call {
-        $qtdItem2 = &invamount(Casca)
-        $qtdItem1 = &invamount(Pele de Verme)
-        $qtdItem3 = &invamount(Erva Amarela)
-
-        call voltarAtacar
-
-        if ( $qtdItem1 < 9 ) {
-            do conf lockMap gef_fild00
-        } elsif ( $qtdItem1 >= 9 && $qtdItem2 < 9 ) {
-            do conf lockMap anthell02
-        } elsif ( $qtdItem1 >= 9 && $qtdItem2 >= 9 && $qtdItem3 < 9) {
-            do conf lockMap prt_fild03
-        } elsif ( $qtdItem1 >= 9 && $qtdItem2 >= 9 && $qtdItem3 >= 9) {
-            [
-            log ================================
-            log Coletei todos os itens, indo Entregar!
-            log ================================
-            ]
-            do conf -f passo_quest_cacador indo entregar itens
-        } else {
-            [
-            log ====================================================
-            log Deveria estar coletando 9 Cascas, 9 Peles de Verme e 9 Ervas Amarelas agora
-            log Mas algo deu errado... reporte aos criadores dessa eventMacro
-            log ====================================================
-            ]
-        }
+        $item1{ID}      = 935 #Casca
+        $item1{lockMap} = gef_fild00
+        
+        $item2{ID}      = 955 #Pele de Verme
+        $item1{lockMap} = anthell02
+        
+        $item3{ID}      = 508 #Erva Amarela
+        $item1{lockMap} = prt_fild03
+        
+        call decidirLockMapProItem
     }
 }
 
@@ -396,45 +290,16 @@ automacro questCacador_coletarItens_possibilidade6 {
     timeout 60
     ConfigKeyNot passo_quest_cacador indo entregar itens
     call {
-        $qtdItem1 = &invamount(Dente de Morcego)
-        $qtdItem2 = &invamount(Muco Pegajoso)
-        $qtdItem3 = &invamount(Pata de Urso)
-
-        call voltarAtacar
-
-        if ( $qtdItem1 < 3 ) {
-            do mconf Piere 0
-            do mconf Deniro 0
-            do mconf Andre 0
-            do mconf Vitata 0
-            do mconf Gierath 0
-            do conf lockMap anthell01
-        } elsif ( $qtdItem1 >= 3 && $qtdItem2 < 1 ) {
-            do conf lockMap pay_dun00
-        } elsif ( $qtdItem1 >= 3 && $qtdItem2 >= 1 && $qtdItem3 < 1) {
-            do conf lockMap pay_fild07
-        } elsif ( $qtdItem1 >= 3 && $qtdItem2 >= 1 && $qtdItem3 >= 1) {
-            [
-            log ================================
-            log Coletei todos os itens, indo Entregar!
-            log ================================
-            ]
-            
-            do mconf Piere 1
-            do mconf Deniro 1
-            do mconf Andre 1
-            do mconf Vitata 1
-            do mconf Gierath 1
-            
-            do conf -f passo_quest_cacador indo entregar itens
-        } else {
-            [
-            log ====================================================
-            log Deveria estar coletando 3 Dentes de Morcego, 1 Muco Pegajoso, 1 Pata de Urso agora
-            log Mas algo deu errado... reporte aos criadores dessa eventMacro
-            log ====================================================
-            ]
-        }
+        $item1{ID}      = 913 #Dente de Morcego
+        $item1{lockMap} = anthell01
+        
+        $item2{ID}      = 938 #Muco Pegajoso
+        $item1{lockMap} = pay_dun00
+        
+        $item3{ID}      = 948 #Pata de Urso
+        $item1{lockMap} = pay_fild07
+        
+        call decidirLockMapProItem
     }
 }
 
@@ -447,37 +312,62 @@ automacro questCacador_coletarItens_possibilidade7 {
     timeout 120
     ConfigKeyNot passo_quest_cacador indo entregar itens
     call {
-        $qtdItem1 = &invamount(Espinho de Porco-Espinho)
-        $qtdItem2 = &invamount(Avelã)
-        $qtdItem3 = &invamount(Cauda de Yoyo)
+        $item1{ID}      = 1027 #Espinho de Porco-Espinho
+        $item1{lockMap} = mjolnir_01
+        
+        $item2{ID}      = 1026 #Avelã
+        $item1{lockMap} = pay_fild09
+        
+        $item3{ID}      = 942 #Cauda de Yoyo
+        $item1{lockMap} = prt_fild03
+        
+        call decidirLockMapProItem
+    }
+}
 
-        call voltarAtacar
-
-        if ( $qtdItem1 < 2 ) {
-            do conf lockMap mjolnir_01
-        } elsif ( $qtdItem1 >= 2 && $qtdItem2 < 1 ) {
-            do mconf Salgueiro Ancião 0
-            do conf lockMap pay_fild09
-        } elsif ( $qtdItem1 >= 2 && $qtdItem2 >= 1 && $qtdItem3 < 1) {
-            do conf lockMap prt_fild03
-        } elsif ( $qtdItem1 >= 2 && $qtdItem2 >= 1 && $qtdItem3 >= 1) {
-            [
-            log ================================
-            log Coletei todos os itens, indo Entregar!
-            log ================================
-            ]
-            
-            do mconf Salgueiro Ancião 1
-            
-            do conf -f passo_quest_cacador indo entregar itens
-        } else {
-            [
-            log ====================================================
-            log Deveria estar coletando 2 Espinhos de Porco-Espinho,  1 Avelã e 1 Cauda de Yoyo agora
-            log Mas algo deu errado... reporte aos criadores dessa eventMacro
-            log ====================================================
-            ]
-        }
+macro decidirLockMapProItem {
+    call voltarAtacar
+    
+    $item1{qtdQuePreciso} = pegarConfigItemsControl($item1{ID}, "keep")
+    $item2{qtdQuePreciso} = pegarConfigItemsControl($item2{ID}, "keep")
+    $item3{qtdQuePreciso} = pegarConfigItemsControl($item3{ID}, "keep")
+    
+    #se não tiver o item1, vamos pegar ele
+    if ( &invamount($item1{ID}) < $item1{qtdQuePreciso} ) {
+        do conf lockMap $item1{lockMap}
+        call pegarItemDoArmazenSeTiver "$item1{ID}" "$item1{qtdQuePreciso}"
+        
+    #se já tiver o item1, vamos pegar o item2
+    } elsif ( &invamount($item1{ID}) >= $item1{qtdQuePreciso} && &invamount($item2{ID}) < $item2{qtdQuePreciso} ) {
+        do conf lockMap $item2{lockMap}
+        call pegarItemDoArmazenSeTiver "$item2{ID}" "$item2{qtdQuePreciso}"
+        
+    #se ja tiver tanto o item1 quanto o item2, vamos pegar o item3
+    } elsif ( &invamount($item1{ID}) >= $item1{qtdQuePreciso} && &invamount($item2{ID}) >= $item2{qtdQuePreciso} && &invamount($item3{ID}) < $item3{qtdQuePreciso}) {
+        do conf lockMap $item3{lockMap}
+        call pegarItemDoArmazenSeTiver "$item3{ID}" "$item3{qtdQuePreciso}"
+        
+    #se tiver todos os 3 items, aí vai entregar
+    } elsif ( &invamount($item1{ID}) >= $item1{qtdQuePreciso} && &invamount($item2{ID}) >= $item2{qtdQuePreciso} && &invamount($item3{ID}) >= $item3{qtdQuePreciso}) {
+        [
+        log ================================
+        log Coletei todos os itens, indo Entregar!
+        log ================================
+        ]
+        do conf -f passo_quest_cacador indo entregar itens
+    
+    #se cair aqui é porque tem um bug na macro, aí é muita treta
+    } else {
+        [
+        error ====================================================
+        error Deveria estar coletando:
+        error $item1{qtdQuePreciso} pegarNomePeloIdDoItem($item1{ID}),
+        error $item1{qtdQuePreciso} pegarNomePeloIdDoItem($item1{ID}) e
+        error $item1{qtdQuePreciso} pegarNomePeloIdDoItem($item1{ID}) agora
+        error Mas algo deu errado... reporte aos criadores dessa eventMacro
+        error ====================================================
+        ]
+        call informacoes
     }
 }
 
@@ -512,7 +402,7 @@ automacro questCacador_entregarItensEmHugel {
     exclusive 1
     call {
         call pararDeAtacar
-    do conf lockMap none 
+    do conf lockMap none
         call aeroplano_junoPara "hugel"
 
     }
@@ -575,7 +465,7 @@ automacro questCacador_irAteOPalacioDePayon {
     call {
     do move payon_in03 158 33
         do move payon_in03 131 7 &rand(2,4)
-    do talknpc 131 7 r3 
+    do talknpc 131 7 r3
     }
 }
 
@@ -763,11 +653,11 @@ automacro questCacador_labirinto {
         log ===================================
         ]
         do move 110 131
-        do south 25 
+        do south 25
         do west 10
         do talk &npc(/switch/i)
         do talk resp 0
-        do east 10 
+        do east 10
         do north 25
         do move 89 131
         do north 10
@@ -782,12 +672,27 @@ automacro questCacador_labirinto {
 automacro questCacador_irAteAGuildaDosArqueirosRelatarSucesso {
     QuestActive 4012
     exclusive 1
+    ConfigKey quest_cacador_lider palacio_payon
+    call {
+        do move payon_in02 21 31 &rand(2,4)
+    do talknpc 21 31 r0
+    }
+}
+
+#Nao quis entender o porque. Apenas funcionou (testado duas vezes)
+#4012#Mudança de Classe: Caçador#SG_FEEL#QUE_NOIMAGE#
+#Relate ao Senhor da Guilda dos Caçadores que passou no exame. #
+##
+automacro questCacador_irAteAGuildaDosArqueirosRelatarSucesso2 {
+    QuestActive 4012
+    exclusive 1
     ConfigKey quest_cacador_lider guilda_arqueiros
     call {
         do move payon_in02 21 31 &rand(2,4)
     do talknpc 21 31 r0
     }
 }
+
 
 #4012#Mudança de Classe: Caçador#SG_FEEL#QUE_NOIMAGE#
 #Relate ao Senhor da Guilda dos Caçadores que passou no exame. #
@@ -798,7 +703,7 @@ automacro questCacador_irAteOPalacioDePayonRelatarSucessoEntrarPalacio {
     InMap payon
     ConfigKey quest_cacador_lider palacio_payon
     call {
-        do move payon 188 233 
+        do move payon 188 233
     }
 }
 
@@ -810,7 +715,7 @@ automacro questCacador_irAteOPalacioDePayonRelatarSucessoNoPalacio {
     call {
         do move payon_in03 158 33
         do move payon_in03 131 7 &rand(2,4)
-    do talknpc 131 7 r0 
+    do talknpc 131 7 r0
     }
 }
 
@@ -826,7 +731,7 @@ automacro questCacador_termineiDesafiosVoltandoHugel {
     exclusive 1
     call {
         call pararDeAtacar
-    do conf lockMap none 
+    do conf lockMap none
         call aeroplano_junoPara "hugel"
 
     }

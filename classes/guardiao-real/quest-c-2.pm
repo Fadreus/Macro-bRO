@@ -1,15 +1,15 @@
 sub inicializarParametrosQuestClasse2 {
-    my ($classe) = @_;
+    my ($manterOuGuardar) = @_;
     my %items = (
     523 => "1 1 0", #Água Benta
     930 => "10 1 0", #Bandagem Estragada
     1041 => "10 1 0", #Lampião
-    2608 => "1 1 0" #Rosário 
+    2608 => "1 1 0" #Rosário
     );
     Commands::run("conf -f questc2_implementada true");
     foreach $key (keys %items) {
-        if ($classe == 1) { 
-            Commands::run("iconf $key $items{$key}") 
+        if ($manterOuGuardar eq "manter") {
+            Commands::run("iconf $key $items{$key}")
         } else {
             Commands::run("iconf $key 0 1 0")
         }
@@ -58,7 +58,7 @@ automacro virarTemplario_Começo {
         do talk resp 0
         [
         log ==============================
-        log Falei com o Templario, agora 
+        log Falei com o Templario, agora
         log vou coletar os itens!
         log ==============================
         ]
@@ -100,7 +100,7 @@ automacro virarTemplario_PegarItens {
         } elsif ( $qtdBandagem >= 10 && $qtdLampiao >= 10) {
             #se já tiver todos os itens, tá na hora!
             log ====================================
-            log Já coletei todos os itens, 
+            log Já coletei todos os itens,
             log Indo falar com o NPC
             log ====================================
             do conf -f questTemplario jaColeteiOsItens
@@ -205,7 +205,7 @@ automacro virarTemplario_ComprarHiper_poucoZeny {
     call {
         [
         log ===================================
-        log = Não tenho zeny Suficiente Pra 
+        log = Não tenho zeny Suficiente Pra
         log = Comprar hiper, melhor me dar zeny
         log ===================================
         ]
@@ -259,7 +259,7 @@ automacro virarTemplario_ComprarPotBranca {
         if (checarSeExisteNoConfig("BetterShopper_1") = nao) {
             adicionaBetterShopper()
             pause 1
-            do reload config    
+            do reload config
         }
         do conf BetterShopper_1 Poção Branca
         do conf BetterShopper_1_maxPrice 1100
@@ -296,6 +296,24 @@ automacro virarTemplario_ComparBalaDeGuaraná {
     }
 }
 
+automacro virarTemplario_bugado {
+    ConfigKey BetterShopper_on 1
+    ConfigKeyNot route_randomWalk 1
+    exclusive 1
+    call {
+        do conf route_randomWalk 1
+    }
+}
+
+automacro virarTemplario_bugado2 {
+    ConfigKey BetterShopper_on 1
+    ConfigKeyNot route_randomWalk_inTown 1
+    exclusive 1
+    call {
+        do conf route_randomWalk_inTown 1
+    }
+}
+
 #3009#Mudança de Classe: Templário#SG_FEEL#QUE_NOIMAGE#
 #'Posso ver seu potencial como templário. Encontre-se com ^0000FFMoorenak Miyol^000000. Ele está na prisão subterrânea do Castelo de Prontera. Fale com ele primeiro.' #
 ##
@@ -311,6 +329,7 @@ automacro virarTemplario_FalarComCaraNaPrisão_IndoAteEle {
         do move prt_castle 164 32 &rand(4,7)
     }
 }
+
 
 #3009#Mudança de Classe: Templário#SG_FEEL#QUE_NOIMAGE#
 #'Posso ver seu potencial como templário. Encontre-se com ^0000FFMoorenak Miyol^000000. Ele está na prisão subterrânea do Castelo de Prontera. Fale com ele primeiro.' #
@@ -334,7 +353,7 @@ automacro virarTemplario_FalarComCaraNaPrisão {
         do conf BetterShopper_on 0
         do conf BetterShopper_0_disabled 1
         do conf BetterShopper_1_disabled 1
-        do conf BetterShopper_2_disabled 1        
+        do conf BetterShopper_2_disabled 1
         do conf lockMap none
         call pararDeAtacarApenasCorrer
         $blocoJaExiste = checarSeExisteNoConfig("useSelf_item_1")
@@ -414,7 +433,7 @@ automacro virarTemplario_correr_morri_indoTentarDenovo {
         do conf BetterShopper_on 0
         do conf BetterShopper_0_disabled 1
         do conf BetterShopper_1_disabled 1
-        do conf BetterShopper_2_disabled 1        
+        do conf BetterShopper_2_disabled 1
         do conf lockMap none
         call pararDeAtacarApenasCorrer
         $blocoJaExiste = checarSeExisteNoConfig("useSelf_item_1")
@@ -677,7 +696,7 @@ automacro virarTemplario_final {
     JobID $parametrosClasses{idC1}, $parametrosClasses{idBC1}
     NpcNear /Senior Crusader/
     call {
-        do talk $.NpcNearLastBinId    
+        do talk $.NpcNearLastBinId
     }
 }
 
@@ -725,7 +744,7 @@ automacro virarTemplario_final {
 #Crusader prt_church 95 127
 #Bliant Piyord prt_castle 35 151
 
-#lugar pra pegar os 10 Lampião: 
+#lugar pra pegar os 10 Lampião:
 #mjo_dun02 (lento mas morre menos na teoria)
 #mjo_dun03 (rápido mas morre mais teoricamente)
 #

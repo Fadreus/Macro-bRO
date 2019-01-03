@@ -1,7 +1,7 @@
 #!/bin/bash
 if hash pwsh 2> /dev/null; then
    PS3='Escolha classe desejada: '
-   options=("arcano" "arcebispo" "bioquimico" "cavaleiro-runico" "feiticeiro" "guardiao-real" "mecanico" "musa" "renegado" "sentinela" "sicario" "shura" "trovador")
+   options=("Cavaleiro Rúnico" "Guardião Real" "Arcano" "Feiticeiro" "Sentinela" "Trovador" "Musa" "Mecânico" "Bioquímico" "Sicário" "Renegado" "Arcebispo" "Shura" "Mestre Taekwon" "Espiritualista" "Kagerou" "Oboro" "Insurgente" "Superaprendiz")
    select opt in "${options[@]}"
    do
         if [ -z $opt ]; then
@@ -14,5 +14,5 @@ if hash pwsh 2> /dev/null; then
         fi
    done
 else 
-    echo "Powershell deve ser instalado. Siaga as instruções em: https://github.com/PowerShell/PowerShell"
+    echo "Powershell deve ser instalado. Siga as instruções em: https://github.com/PowerShell/PowerShell"
 fi
