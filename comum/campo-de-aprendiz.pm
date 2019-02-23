@@ -55,12 +55,12 @@ automacro campoDeAprendiz_falarComSprakkiLadoDeFora {
         do iconf 7059 50 0 0
         do iconf 7060 50 0 0
         do iconf 13040 0 0 0
-        do iconf 1243 0 0 0
-        do iconf 2112 0 0 0
-        do iconf 5055 0 0 0
-        do iconf 2414 0 0 0
-        do iconf 2510 0 0 0
-        do iconf 2352 0 0 0
+        do iconf 1243 0 0 0 # Adaga do Aprendiz
+        do iconf 2112 0 0 0 # Vembrassa do Aprendiz
+        do iconf 5055 0 0 0 # Chapéu de Ovo do Aprendiz
+        do iconf 2414 0 0 0 # Sandálias do Aprendiz
+        do iconf 2510 0 0 0 # Capuz do Aprendiz
+        do iconf 2352 0 0 0 # Traje do Aprendiz
         do iconf 1201 0 0 0
         do iconf 13041 0 0 0
         do iconf 2393 0 0 0
@@ -78,7 +78,7 @@ automacro campoDeAprendiz_entrar {
     QuestActive 7117
     InMap new_1-1, new_2-1, new_3-1, new_4-1, new_5-1
     priority 1
-    call GotoInside
+    call entrarNoCastelo
 }
 
 automacro moveInsideBugged1 {
@@ -87,7 +87,7 @@ automacro moveInsideBugged1 {
     BaseLevel = 2
     InMap new_1-1, new_2-1, new_3-1, new_4-1, new_5-1
     priority 1
-    call GotoInside
+    call entrarNoCastelo
 }
 
 #7118#Campo de Treinamento#SG_FEEL#QUE_NOIMAGE#
@@ -99,10 +99,10 @@ automacro campoDeAprendiz_entrar_bugado {
     BaseLevel = 2
     InMap new_1-1, new_2-1, new_3-1, new_4-1, new_5-1
     priority 1
-    call GotoInside
+    call entrarNoCastelo
 }
 
-macro GotoInside {
+macro entrarNoCastelo {
     $proximoMapa = proximoMapa("$.map")
     do move $proximoMapa 101 29
 }
@@ -117,7 +117,7 @@ automacro campoDeAprendiz_irAteSprakki {
     BaseLevel = 1
     InMap new_1-2, new_2-2, new_3-2, new_4-2, new_5-2
     priority 1
-    call GotoSpraki
+    call irAteSprakki
 }
 
 automacro campoDeAprendiz_irAteSprakki_bugado1 {
@@ -127,7 +127,7 @@ automacro campoDeAprendiz_irAteSprakki_bugado1 {
     NpcNotNear /Sprakki/
     InMap new_1-2, new_2-2, new_3-2, new_4-2, new_5-2
     priority 1
-    call GotoSpraki
+    call irAteSprakki
 }
 
 #7118#Campo de Treinamento#SG_FEEL#QUE_NOIMAGE#
@@ -140,10 +140,10 @@ automacro campoDeAprendiz_irAteSprakki_bugado2 {
     NpcNotNear /Sprakki/
     InMap new_1-2, new_2-2, new_3-2, new_4-2, new_5-2
     priority 1
-    call GotoSpraki
+    call irAteSprakki
 }
 
-macro GotoSpraki {
+macro irAteSprakki {
     do move 101 29
 }
 
@@ -154,10 +154,7 @@ automacro campoDeAprendiz_falarComSprakki_bugado1 {
     NpcNear /Sprakki/
     InMap new_1-2, new_2-2, new_3-2, new_4-2, new_5-2
     priority 0
-    call {
-      do talk $.NpcNearLastBinId
-      do talk resp 0
-    }
+    call falarComSprakki
 }
 
 #7118#Campo de Treinamento#SG_FEEL#QUE_NOIMAGE#
@@ -170,10 +167,7 @@ automacro campoDeAprendiz_falarComSprakki_bugado2 {
     NpcNear /Sprakki/
     InMap new_1-2, new_2-2, new_3-2, new_4-2, new_5-2
     priority 0
-    call {
-      do talk $.NpcNearLastBinId
-      do talk resp 0
-    }
+    call falarComSprakki
 }
 
 #7117#Campo de Treinamento#SG_FEEL#QUE_NOIMAGE#
@@ -186,10 +180,12 @@ automacro campoDeAprendiz_falarComSprakki {
     NpcNear /Sprakki/
     InMap new_1-2, new_2-2, new_3-2, new_4-2, new_5-2
     priority 0
-    call {
-        do talk $.NpcNearLastBinId
-        do talk resp 0
-    }
+    call falarComSprakki
+}
+
+macro falarComSprakki {
+    do talk $.NpcNearLastBinId
+    do talk resp 0
 }
 
 #7118#Campo de Treinamento#SG_FEEL#QUE_NOIMAGE#
@@ -201,7 +197,7 @@ automacro campoDeAprendiz_irAteBrade1 {
     NpcNotNear /Brade/
     InMap new_1-2, new_2-2, new_3-2, new_4-2, new_5-2
     priority 2
-    call MoveToBrade
+    call moverAteBrade
 }
 
 #7119#Campo de Treinamento#SG_FEEL#QUE_NOIMAGE#
@@ -213,10 +209,22 @@ automacro campoDeAprendiz_irAteBrade2 {
     NpcNotNear /Brade/
     InMap new_1-2, new_2-2, new_3-2, new_4-2, new_5-2
     priority 2
-    call MoveToBrade
+    call moverAteBrade
 }
 
-macro MoveToBrade {
+automacro campoDeAprendiz_irAteBrade_bugado {
+    exclusive 1
+    QuestInactive 7118
+    QuestInactive 7119
+    BaseLevel = 3
+    InInventoryID 5055 = 0  # Chapéu de Ovo do Aprendiz
+    NpcNotNear /Brade/
+    InMap new_1-2, new_2-2, new_3-2, new_4-2, new_5-2
+    priority 1
+    call moverAteBrade
+}
+
+macro moverAteBrade {
     do move 103 105
 }
 
@@ -231,27 +239,14 @@ automacro campoDeAprendiz_falarComBrade {
     InMap new_1-2, new_2-2, new_3-2, new_4-2, new_5-2
     priority 0
     call {
-        do pconf 5055 0
-        do pconf 2510 0
-        do pconf 2414 0
-        do pconf 2112 0
-        do pconf 1243 0
-        do pconf 2352 0
+        do pconf 5055 0 # Chapéu de Ovo do Aprendiz
+        do pconf 2510 0 # Capuz do Aprendiz
+        do pconf 2414 0 # Sandálias do Aprendiz
+        do pconf 2112 0 # Vembrassa do Aprendiz
+        do pconf 1243 0 # Adaga do Aprendiz
+        do pconf 2352 0 # Traje do Aprendiz
         do talk $.NpcNearLastBinId
     }
-}
-
-
-automacro campoDeAprendiz_irAteBrade_bugado {
-    exclusive 1
-    QuestInactive 7118
-    QuestInactive 7119
-    BaseLevel = 3
-    InInventoryID 5055 = 0
-    NpcNotNear /Brade/
-    InMap new_1-2, new_2-2, new_3-2, new_4-2, new_5-2
-    priority 1
-    call MoveToBrade
 }
 
 automacro campoDeAprendiz_falarComBrade_bugado {
@@ -259,17 +254,17 @@ automacro campoDeAprendiz_falarComBrade_bugado {
     QuestInactive 7118
     QuestInactive 7119
     BaseLevel = 3
-    InInventoryID 5055 = 0
+    InInventoryID 5055 = 0  # Chapéu de Ovo do Aprendiz
     NpcNear /Brade/
     InMap new_1-2, new_2-2, new_3-2, new_4-2, new_5-2
     priority 0
     call {
-        do pconf 5055 0
-        do pconf 2510 0
-        do pconf 2414 0
-        do pconf 2112 0
-        do pconf 1243 0
-        do pconf 2352 0
+        do pconf 5055 0 # Chapéu de Ovo do Aprendiz
+        do pconf 2510 0 # Capuz do Aprendiz
+        do pconf 2414 0 # Sandálias do Aprendiz
+        do pconf 2112 0 # Vembrassa do Aprendiz
+        do pconf 1243 0 # Adaga do Aprendiz
+        do pconf 2352 0 # Traje do Aprendiz
         do talk $.NpcNearLastBinId
     }
 }
@@ -282,24 +277,18 @@ automacro campoDeAprendiz_equiparEsquipesDoBrade {
     QuestActive 7119
     IsNotEquippedID topHead 5055, leftHand 2112, robe 2510, shoes 2414, armor 2352, rightHand 1243
     call {
-        do pconf 5055 0
-        do pconf 2510 0
-        do pconf 2414 0
-        do pconf 2112 0
-        do pconf 1243 0
-        do pconf 2352 0
-        $check = pegarIndiceDoEquipamentoPeloId("topHead", 5055)
-        if ($check != -1) do eq $check
-        $check = pegarIndiceDoEquipamentoPeloId("robe", 2510)
-        if ($check != -1) do eq $check
-        $check = pegarIndiceDoEquipamentoPeloId("shoes",2414)
-        if ($check != -1) do eq $check
-        $check = pegarIndiceDoEquipamentoPeloId("armor",2352)
-        if ($check != -1) do eq $check
-        $check = pegarIndiceDoEquipamentoPeloId("leftHand",2112)
-        if ($check != -1) do eq $check
-        $check = pegarIndiceDoEquipamentoPeloId("rightHand",1243)
-        if ($check != -1) do eq $check
+        do pconf 5055 0 # Chapéu de Ovo do Aprendiz
+        do pconf 2510 0 # Capuz do Aprendiz
+        do pconf 2414 0 # Sandálias do Aprendiz
+        do pconf 2112 0 # Vembrassa do Aprendiz
+        do pconf 1243 0 # Adaga do Aprendiz
+        do pconf 2352 0 # Traje do Aprendiz
+        call equiparSePossivel "topHead"   5055 # Chapéu de Ovo do Aprendiz
+        call equiparSePossivel "robe"      2510 # Capuz do Aprendiz
+        call equiparSePossivel "shoes"     2414 # Sandálias do Aprendiz
+        call equiparSePossivel "armor"     2352 # Traje do Aprendiz
+        call equiparSePossivel "leftHand"  2112 # Vembrassa do Aprendiz
+        call equiparSePossivel "rightHand" 1243 # Adaga do Aprendiz
     }
 }
 
@@ -310,12 +299,12 @@ automacro campoDeAprendiz_falarComBradeSegundaVez {
     exclusive 1
     QuestActive 7119
     BaseLevel = 3
-    IsEquippedID topHead 5055
-    IsEquippedID leftHand 2112
-    IsEquippedID rightHand 1243
-    IsEquippedID robe 2510
-    IsEquippedID armor 2352
-    IsEquippedID shoes 2414
+    IsEquippedID topHead 5055  # Chapéu de Ovo do Aprendiz
+    IsEquippedID leftHand 2112 # Vembrassa do Aprendiz
+    IsEquippedID rightHand 1243 # Adaga do Aprendiz
+    IsEquippedID robe 2510 # Capuz do Aprendiz
+    IsEquippedID armor 2352 # Traje do Aprendiz
+    IsEquippedID shoes 2414 # Sandálias do Aprendiz
     NpcNear /Brade/
     call {
         do talk $.NpcNearLastBinId
@@ -328,15 +317,15 @@ automacro campoDeAprendiz_bugouNoBradeNaQuest7120IrAteJinha {
     QuestInactive 7120
     BaseLevel = 4
     InInventoryID 12324 > 0
-    IsEquippedID topHead 5055
-    IsEquippedID leftHand 2112
-    IsEquippedID rightHand 1243
-    IsEquippedID robe 2510
-    IsEquippedID armor 2352
-    IsEquippedID shoes 2414
+    IsEquippedID topHead 5055  # Chapéu de Ovo do Aprendiz
+    IsEquippedID leftHand 2112 # Vembrassa do Aprendiz
+    IsEquippedID rightHand 1243 # Adaga do Aprendiz
+    IsEquippedID robe 2510 # Capuz do Aprendiz
+    IsEquippedID armor 2352 # Traje do Aprendiz
+    IsEquippedID shoes 2414 # Sandálias do Aprendiz
     SkillLevel NV_FIRSTAID = 0
     NpcNotNear /Jinha/
-    call MoveJinha
+    call moveAteJinha
 }
 
 #7120#Campo de Treinamento#SG_FEEL#QUE_NOIMAGE#
@@ -348,10 +337,10 @@ automacro campoDeAprendiz_irAteJinha {
     NpcNotNear /Jinha/
     SkillLevel NV_FIRSTAID = 0
     priority 0
-    call MoveJinha
+    call moveAteJinha
 }
 
-macro MoveJinha {
+macro moveAteJinha {
     do move 107 108
 }
 
@@ -361,12 +350,12 @@ automacro campoDeAprendiz_bugouNoBradeNaQuest7120FalarComJinha {
     QuestInactive 7120
     BaseLevel = 4
     InInventoryID 12324 > 0
-    IsEquippedID topHead 5055
-    IsEquippedID leftHand 2112
-    IsEquippedID rightHand 1243
-    IsEquippedID robe 2510
-    IsEquippedID armor 2352
-    IsEquippedID shoes 2414
+    IsEquippedID topHead 5055  # Chapéu de Ovo do Aprendiz
+    IsEquippedID leftHand 2112 # Vembrassa do Aprendiz
+    IsEquippedID rightHand 1243 # Adaga do Aprendiz
+    IsEquippedID robe 2510 # Capuz do Aprendiz
+    IsEquippedID armor 2352 # Traje do Aprendiz
+    IsEquippedID shoes 2414 # Sandálias do Aprendiz
     SkillLevel NV_FIRSTAID = 0
     NpcNear /Jinha/
     call TalkJinha
@@ -396,15 +385,15 @@ automacro campoDeAprendiz_bugouNoBradeNaQuest7120IrAteBrade {
     BaseLevel = 4
     InInventoryID 12324 > 0
     InInventoryID 2393 = 0
-    IsEquippedID topHead 5055
-    IsEquippedID leftHand 2112
-    IsEquippedID rightHand 1243
-    IsEquippedID robe 2510
-    IsEquippedID armor 2352
-    IsEquippedID shoes 2414
+    IsEquippedID topHead 5055  # Chapéu de Ovo do Aprendiz
+    IsEquippedID leftHand 2112 # Vembrassa do Aprendiz
+    IsEquippedID rightHand 1243 # Adaga do Aprendiz
+    IsEquippedID robe 2510 # Capuz do Aprendiz
+    IsEquippedID armor 2352 # Traje do Aprendiz
+    IsEquippedID shoes 2414 # Sandálias do Aprendiz
     SkillLevel NV_FIRSTAID = 1
     NpcNotNear /Brade/
-    call MoveToBrade
+    call moverAteBrade
 }
 
 automacro campoDeAprendiz_bugouNoBradeNaQuest7120FalarComBrade {
@@ -414,15 +403,15 @@ automacro campoDeAprendiz_bugouNoBradeNaQuest7120FalarComBrade {
     BaseLevel = 4
     InInventoryID 12324 > 0
     InInventoryID 2393 = 0
-    IsEquippedID topHead 5055
-    IsEquippedID leftHand 2112
-    IsEquippedID rightHand 1243
-    IsEquippedID robe 2510
-    IsEquippedID armor 2352
-    IsEquippedID shoes 2414
+    IsEquippedID topHead 5055  # Chapéu de Ovo do Aprendiz
+    IsEquippedID leftHand 2112 # Vembrassa do Aprendiz
+    IsEquippedID rightHand 1243 # Adaga do Aprendiz
+    IsEquippedID robe 2510 # Capuz do Aprendiz
+    IsEquippedID armor 2352 # Traje do Aprendiz
+    IsEquippedID shoes 2414 # Sandálias do Aprendiz
     SkillLevel NV_FIRSTAID = 1
     NpcNear /Brade/
-    call TalkBradeGetTunic
+    call falarComBrade_pegarTunica
 }
 
 #7120#Campo de Treinamento#SG_FEEL#QUE_NOIMAGE#
@@ -434,10 +423,10 @@ automacro campoDeAprendiz_falarComBradeTerceiraVez {
     SkillLevel NV_FIRSTAID = 1
     NpcNear /Brade/
     priority 0
-    call TalkBradeGetTunic
+    call falarComBrade_pegarTunica
 }
 
-macro TalkBradeGetTunic {
+macro falarComBrade_pegarTunica {
     do talk $.NpcNearLastBinId
 }
 
@@ -447,12 +436,7 @@ automacro campoDeAprendiz_equiparEquipesDaGarota {
     InInventoryID 2393 = 1
     InMap new_1-2, new_2-2, new_3-2, new_4-2, new_5-2
     IsNotEquippedID armor 2393
-    call {
-        $check = pegarIndiceDoEquipamentoPeloId("armor", 2393)
-        if ($check != -1) {
-            do eq $check
-        }
-    }
+    call equiparSePossivel "armor" 2393
 }
 
 automacro campoDeAprendiz_irAteChoco {
@@ -572,7 +556,7 @@ automacro campoDeAprendiz_irParaOsCamposDoBrade {
     InMap new_1-3, new_2-3, new_3-3, new_4-3, new_5-3
     NpcNotNear /Brade/
     priority 1
-    call moveBradeGrounds
+    call moverAteBrade_campoDeBatalha
 }
 
 automacro campoDeAprendiz_falarComBradeNosCamposParaPegarQuests {
@@ -606,10 +590,10 @@ automacro campoDeAprendiz_irAteBradeQuestCompleta {
     InMap new_1-3, new_2-3, new_3-3, new_4-3, new_5-3
     NpcNotNear /Brade/
     priority 1
-    call moveBradeGrounds
+    call moverAteBrade_campoDeBatalha
 }
 
-macro moveBradeGrounds {
+macro moverAteBrade_campoDeBatalha {
     do mconf 1063 0 0 0 #lunatico
     do mconf 1002 0 0 0 #poring
     do mconf 1113 0 0 0 #drops
@@ -634,10 +618,7 @@ automacro campoDeAprendiz_equiparEquipesParaBradeNosCampos {
     InInventoryID 13040 = 1
     IsNotEquippedID rightHand 13040
     InMap new_1-3, new_2-3, new_3-3, new_4-3, new_5-3
-    call {
-        $check = pegarIndiceDoEquipamentoPeloId("rightHand", 13040)
-        if ($check != -1) do eq $check
-    }
+    call equiparSePossivel "rightHand" 13040
 }
 
 automacro campoDeAprendiz_ultimoBugDoBrade {
@@ -646,7 +627,7 @@ automacro campoDeAprendiz_ultimoBugDoBrade {
     call {
         log Acabou de ocorrer um bug na sequencia do campo de treinamento
         log Resolvendo isso
-        call moveBradeGrounds
+        call moverAteBrade_campoDeBatalha
         do talk &npc(/Brade/)
         do conf -f quest_atual lunaticos
     }
@@ -659,7 +640,7 @@ automacro campoDeAprendiz_questLunaticos_bugada {
     call {
         log Acabou de ocorrer um bug na sequencia do campo de treinamento
         log Resolvendo isso
-        call moveBradeGrounds
+        call moverAteBrade_campoDeBatalha
         do talk &npc(/Brade/)
     }
 }
