@@ -34,7 +34,10 @@ if (! $job) {
                 public String statsPadraoClasse3 { get; set; }
                 public String renascer { get; set; }
                 public String amigo { get; set; }
-                public String pontoDeEncontro { get; set; }
+                public String pontoDeEncontroX { get; set; }
+                public String pontoDeEncontroY { get; set; }
+                public String lvlClasseParaVirarClasse2 { get; set; }
+                public String lvlClasseParaVirarClasse2T { get; set; }
 
             }
         '
@@ -42,7 +45,7 @@ if (! $job) {
         
         $configuracoes = New-Object Configuracoes
     } else {
-        [System.Windows.Forms.MessageBox]::Show( "O powershell do seu sistema operacional é muito antigo. As configurações personalizadas serão apenas leitura para visualização", "Aviso" )
+        [System.Windows.Forms.MessageBox]::Show( "O powershell do seu sistema operacional é muito antigo. As configurações personalizadas serÃ£o apenas leitura para visualização", "Aviso" )
         $configuracoes = New-Object -TypeName PSObject -Prop @{ 
             skillsAprendiz = $null;
             skillsClasse1 = $null; 
@@ -79,7 +82,7 @@ function getVersao {
 
 function limparNomeDaClasse {
     Param($classe)
-    return $classe.ToString().ToLower().Replace(" ","-").Replace("í","i").Replace("ú","u").Replace("ã","a").Replace("á","a").Replace("â","a")
+    return $classe.ToString().ToLower().Replace(" ","-").Replace("í","i").Replace("ú","u").Replace("ã","a").Replace("â","a").Replace("á","a")
 }
 
 function gerarMacro {
@@ -189,6 +192,7 @@ function desenharJanela {
     $listJobs.MultiSelect = $false
     $listJobs.Add_click({ acaoCarregarConfiguracoes })
     $listJobs.AutoSize = $true
+
     
 
     $painelSuperior.Controls.Add($labelEscolherClasse);
@@ -222,12 +226,14 @@ function desenharJanela {
 
 function carregarValores {
     
-    $classes = "Cavaleiro Rúnico", "Guardião Real", "Arcano", "Feiticeiro", "Sentinela", "Trovador", "Musa", "Mecânico", "Bioquímico", "Sicário", "Renegado", "Arcebispo", "Shura", "Mestre Taekwon", "Espiritualista", "Kagerou", "Oboro", "Insurgente", "Superaprendiz"
+    $classes = "espadachim__cavaleiro_lorde", "espadachim__templario__paladino",  "arqueiro__cacador__atirador-de-elite", "arqueiro__bardo__menestrel", "arqueira__odialisca__cigana", "mercador__ferreiro__mestre-ferreiro", "mercador__alquimista__criador", "gatuno__mercenario__algoz", "gatuno__arruaceiro__desordeiro", "novico__sacerdote__sumo-sacerdote", "novico__monge__mestre"
+    $icones = "Cavaleiro Rúnico", "Guardião Real", "Sentinela", "Trovador", "Musa", "Mecânico", "Bioquímico", "Sicário", "Renegado", "Arcebispo", "Shura"
 
     For ($i=0; $i -lt $classes.Count; $i++) {
         $listItemClasse = New-Object System.Windows.Forms.ListViewItem
         $classe = limparNomeDaClasse($classes[$i])
-        $imageListIcons.Images.Add([System.Drawing.Image]::FromFile("gerador-images/$classe.png"))
+        $icone = limparNomeDaClasse($icones[$i])
+        $imageListIcons.Images.Add([System.Drawing.Image]::FromFile("gerador-images/$icone.png"))
         $listItemClasse.ImageIndex = $i
         $listItemClasse.Text = $classes[$i]
         
@@ -250,7 +256,7 @@ function updater {
         $versao_atual = (git rev-list --count origin/master) | Out-String
         $versao_local = (git rev-list --count master) | Out-String
         if($versao_atual -ne $versao_local) {
-            $confirmacao = [System.Windows.Forms.MessageBox]::Show( "Nova versão disponível. Gostaria de atualizar sua versão?", "Versão desatualizada", [Windows.Forms.MessageBoxButtons]::YesNo )
+            $confirmacao = [System.Windows.Forms.MessageBox]::Show( "Nova versão disponÃ­vel. Gostaria de atualizar sua versão?", "Versão desatualizada", [Windows.Forms.MessageBoxButtons]::YesNo )
             if ($confirmacao -eq "YES"){
                 git stash save
                 git pull --rebase

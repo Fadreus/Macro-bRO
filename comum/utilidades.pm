@@ -2,7 +2,6 @@ automacro utilidades_configEstaErrada {
     exclusive 1
     overrideAI 1
     priority -5
-    ConfigKey questRenascer_estagio none
     ConfigKeyNot autoTalkCont 1
     call {
         log Tem uma config que está errada
@@ -38,11 +37,11 @@ automacro checkSeEstaNaQuestEden {
     ConfigKey quest_eden em_curso
     call {
         [
-        do warning ===================================
-        do warning = estranho, não tenho nenhuma quest eden
-        do warning = ativa, mas a eventMacro acha que tem
-        do warning = consertando isso
-        do warning ===================================
+        warning ===================================
+        warning = estranho, não tenho nenhuma quest eden
+        warning = ativa, mas a eventMacro acha que tem
+        warning = consertando isso
+        warning ===================================
         ]
         do conf quest_eden none
     }
@@ -58,6 +57,18 @@ macro pararDeAtacar {
 automacro reloadPortals {
     exclusive 1
     timeout 300
+    BaseLevel != 99
+    ConfigKeyNot quest_eden em_curso
+    ConfigKeyNot quest_eden terminando
+    ConfigKeyNot naSequenciaDeSalvamento true
+    ConfigKeyNot virarClasse2 true
+    ConfigKeyNot virarClasse2T true
+    ConfigKeyNot virarClasse3 true
+    ConfigKeyNot quest_skill true
+    ConfigKeyNot esperarFazerQuest true
+    ConfigKeyNot lockMap $mapa{lockMap}
+    ConfigKey aeroplano1 none
+    ConfigKey aeroplano2 none
     ConfigKey questRenascer_estagio none
     JobIDNot 0 #Aprendiz
     JobIDNot 4023 #Baby Aprendiz
@@ -107,20 +118,15 @@ macro pegarItemDoArmazenSeTiver {
 
     #checando duas vezes se tem o item mesmo no storage
     if (&storamount($item) > 0) {
-        $localDaKafra = &config(storageAuto_npc)
-        do move $localDaKafra &rand(3,8)
-        do talknpc &arg("$localDaKafra", 2) &arg("$localDaKafra", 3) r1
-        if ($.storageopen) {
-            do storage get &storage($item) $quantidade
-            do storage close
-        } else {
-            log o storage deveria estar aberto agora, mas não está
-            muita treta vixi
-        }
+        call irNaKafraEAbrirStorage
+        if (!$.storageopen) stop
+        do storage get &storage($item) $quantidade
+        do storage close
+        
     } else {
         [
         log ===================================
-        log = Não tenho o item :/
+        log = Não tenho pegarNomePeloIdDoItem($item) no armazen
         log ===================================
         ]
     }
@@ -128,31 +134,87 @@ macro pegarItemDoArmazenSeTiver {
 
 macro pegarDoStorageEVender {
     set exclusive 1
-    do ai manual
-    if (&config(itemsCheckWeight) != 1) do conf -f itemsCheckWeight 1
-    $localKafra = &config(storageAuto_npc)
-    do move $localKafra &rand(4,7)
-    do talknpc &arg("$localKafra", 2) &arg("$localKafra", 3) r1
-    pause 2
-    if ($.storageopen) {
-
+    $continuarLoop = 1
+    while ($continuarLoop) {
+        do ai manual
         @listaDeItems = criarListaDeItens("sell") #cria a array listaDeItems
+        if (&config(itemsCheckWeight) != 1) do conf -f itemsCheckWeight 1
+        call irNaKafraEAbrirStorage
+        if (!$.storageopen) stop
+        pause 2
+        $temItem = 0
         if ($listaDeItems[0] = erro) stop
-        $cont = 0
-        while ($cont < @listaDeItems  && $.weightpercent < 85) {
-            $qtdDoItemAtual = &storamount($listaDeItems[$cont])
-            do storage get &storage($listaDeItems[$cont]) if ( $qtdDoItemAtual > 0)
-            $cont++
+
+        $index = 0
+        set macro_delay 0.3
+        while ($index < @listaDeItems && $.weightpercent < 85) {
+            $temItem = 1
+            $qtdDoItemAtual = &storamount($listaDeItems[$index])
+            do storage get &storage($listaDeItems[$index]) if ( $qtdDoItemAtual > 0)
+            $index++
         }
         do storage close
         pause 1
-        ai on
+        set macro_delay 1
+        do ai on
         do autosell
-    } else {
-        log o strorage deveria estar aberto agora, mas não está
-        log muita treta vish
+        if (! $temItem) {
+            [
+            log ===================================
+            log = Acredito que vendi todos os itens
+            log = que estavam no storage mas estavam marcados
+            log = pra ser vendido no npc
+            log ===================================
+            ]
+            $continuarLoop = 0
+        }
     }
     log FIM
+}
+
+# essa macro serve para tentar abrir o storage
+# na kafra que está salva na config storageAuto_npc
+# em caso de erro, vai tentar abrir mais duas vezes
+# na terceira vez mostra um erro e para oq tava fazendo
+macro irNaKafraEAbrirStorage {
+    $tentativa = 0
+    while ($continuarLoop || $tentativa >= 3) {
+        
+        $localKafra = &config(storageAuto_npc)
+        do move $localKafra &rand(4,7)
+        
+        if (&config(master) =~ /Valhalla/ ) {
+            do talknpc &arg("$localKafra", 2) &arg("$localKafra", 3) r1 r0
+        } else  {
+            do talknpc &arg("$localKafra", 2) &arg("$localKafra", 3) r1
+        }
+        
+        if (!$.storageopen) {
+            $tentativa++
+            
+            if ($tentativa >= 3) {
+                [
+                error ===================================
+                error = acabei de executar os comandos para
+                error = abrir o storage, porém o mesmo não está aberto
+                error = vou parar tudo que estou fazendo
+                error ===================================
+                ]
+                stop
+            } else {
+                [
+                warning ===================================
+                warning = tentativa $tentativa de 3 de abrir o storage
+                warning = tentando denovo
+                warning ===================================
+                ]
+            }
+        } else {
+            #objetivo cumprido: abrir storage
+            #podemos parar o loop
+            $continuarLoop = 0
+        }
+    }
 }
 
 sub criarListaDeItens {
@@ -232,35 +294,59 @@ macro equiparSePossivel {
     $idDoEquip = $.param[1]
     $indice = pegarIndiceDoEquipamentoPeloId($slot, $idDoEquip)
     if ($indice != -1) do eq $indice
-    log Sucesso.
 }
 
 sub pegarIndiceDoEquipamentoPeloId {
     my ($slotDoEquipamento, $id) = @_;
     message "Tentanto equipar '$items_lut{$id}' ($id)... ";
+
+    #associar o item no inventário a uma variável
     my $item = $char->inventory->getByNameID($id);
+
+    #checar se o item não existe no inventário
     if ($item eq "" ) {
+        #checando se a id passada é uma id válida
         if ( exists $items_lut{$id} ) {
             warning "Voce nao possui esse equipamento\n";
         } else {
-            warning "A ID do item esta incorreta\n";
+            error "A ID do item esta incorreta\n";
+            error "ID apresentada: '$id'\n";
+            error "Entre em contato com os desenvolvedores da eventMacro\n"
         }
         return -1;
     }
+    #atribuindo o indice do item a uma variavel
     my $indiceDoEquip = $item->{binID};
+
+    #checa se tem algo equipado no slot
     if (exists $char->{equipment}{$slotDoEquipamento}) {
         my $equipamento = $char->{equipment}{$slotDoEquipamento};
+
+        #checa se o que está equipado é igual ao que estamos tentando equipar
+        #o único problema desse código é que se vc tiver uma arma normal, e outra com carta
+        #ele vai achar que são iguais e não vai equipar
+        #mas não vai afetar essa eventMacro porque por enquanto só ta sendo usada em equips eden
         if ($equipamento->{nameID} == $id) {
             warning "Isso já está equipado.\n";
             return -1;
+        
+        #se o que tiver equipado for diferente do equip, então vamos equipar o que queremos
         } else {
             return $indiceDoEquip;
         }
+
+    #Se não tiver nada equipado, significa que pode equipar
     } else {
         return $indiceDoEquip;
     }
 }
 
+#sub checarSlot(String $slotDoEquipamento)
+#
+#   checa se no slot especificado já tem algum item equipado ou não
+#
+#se tiver algo equipado, retorna "tem equip"
+#senão, retorna "ta vazio"
 sub checarSlot {
     my ($slotDoEquipamento) = @_;
     if (exists $char->{equipment}{$slotDoEquipamento}) {
@@ -270,9 +356,18 @@ sub checarSlot {
     }
 }
 
+#sub checarSeEquipEstaEquipado(String $slotDoEquipamento, int $id)
+#
+#   checa se o item da id especificada está equipado no slot especificado
+#
+#se o item não existir no seu inventário, retorna "não existe"
+#se o item existir e ele já estiver equipado, retorna "sim"
+#se o item existir, mas não estiver equipado, ou não tiver nenhum equip no slot especificado, retorna "não equipado"
 sub checarSeEquipEstaEquipado {
     my ($slotDoEquipamento, $id) = @_;
     my $item = $char->inventory->getByNameID($id);
+
+    #se o item não existir no seu inventário, retorna "não existe"
     if ($item eq "" ) {
         warning "Erro: você não possui esse equipamento.\n";
         return "não existe";
@@ -280,32 +375,64 @@ sub checarSeEquipEstaEquipado {
     my $indiceDoEquip = $item->{binID};
     if (exists $char->{equipment}{$slotDoEquipamento}) {
         my $equipamento = $char->{equipment}{$slotDoEquipamento};
+
+        #se o item existir e ele já estiver equipado, retorna "sim"
         if ($equipamento->{nameID} == $id) {
             return "sim";
+        
+        #se o item existir, mas não estiver equipado, retorna "não equipado"
         } else {
             return "não equipado";
         }
+
+    #se o item existir, mas não tiver nenhum equip no slot especificado, retorna "não equipado"
     } else {
         return "não equipado";
     }
 }
 
+#sub pegarNomeDoItemEquipado(String $slotDoEquipamento)
+#
+#   serve simplesmente para pegar o nome do equipamento equipado no slot especificado
+#
+#se tiver algo equipado no slot especificado, retorna o nome do item
+#senão, retorna 0 (talvez fosse melhor retornar undef? sei lá)
 sub pegarNomeDoItemEquipado {
     my ($slotDoEquipamento) = @_;
     use strict;
     if (exists $char->{equipment}{$slotDoEquipamento}) {
-        my $equipamento = $char->{equipment}{$slotDoEquipamento};
-        return $equipamento->{name};
+        return $char->{equipment}{$slotDoEquipamento}{name};
     } else {
         return 0;
     }
 }
 
+#sub pegarNomePeloIdDoItem
+#
+#   consegue o nome do item com a id especificada
+#Se a ID existir no items.txt, retorna o nome do item
+#Senão, retorna a ID de volta pra pelo menos ter algo pra mostrar
 sub pegarNomePeloIdDoItem {
-    my $name = $items_lut{$_[0]};
-    return $name;
+    my ($id) = @_;
+    if (exists $items_lut{$id}) {
+        return $items_lut{$id};
+    } else {
+        return $id;
+    }
 }
 
+#sub proximoMapa 
+#
+#   usado para descobrir qual é o próximo mapa a se teleportar no campo de aprendiz
+#   existe 5 cópias do campo de aprendiz, e cada um tem seu próprio código
+#   exemplo, existe o new_1-1, e o new_2-1, que são mapas exatamente iguais
+#   essa é a forma mais fácil de ir para o próximo mapa
+#   se o mapa for new_5-1, aí vai para o mapa new_5-2
+#   poise, é meio confuso mesmo, demorei pra entender
+#
+#se o mapa especificado bater com a regex, então retorna o novo mapa correto pra se teleportar
+#senão, retorna 0
+#note que a única forma de retornar 0 é por inadimplência do programador, então tomem cuidado
 sub proximoMapa {
     my $map = $_[0];
     if ($map =~ /^new_(\d)-(\d)$/) {
@@ -340,12 +467,12 @@ macro rebornarAgora {
         log = peso zero, correto
     } else {
         [
-        log ===================================
-        log = ainda não está com zero de peso
-        log = impossível começar a rebornar
-        log = peso: $.weight
-        log = parando macro
-        log ===================================
+        error ===================================
+        error = ainda não está com zero de peso
+        error = impossível começar a rebornar
+        error = peso: $.weight
+        error = parando macro
+        error ===================================
         ]
         stop
     }
@@ -354,16 +481,16 @@ macro rebornarAgora {
         log = mapa $.map, correto
     } else {
         [
-        log ===================================
-        log = tenho que estar em um dos seguintes mapas:
-        log = yuno
-        log = yuno_in01
-        log = yuno_in02
-        log = yuno_in05
-        log = mas estou em $.map...
-        log = impossível começar a rebornar
-        log = parando macro
-        log ===================================
+        error ===================================
+        error = tenho que estar em um dos seguintes mapas:
+        error = yuno
+        error = yuno_in01
+        error = yuno_in02
+        error = yuno_in05
+        error = mas estou em $.map...
+        error = impossível começar a rebornar
+        error = parando macro
+        error ===================================
         ]
         stop
     }
@@ -372,12 +499,12 @@ macro rebornarAgora {
         log = lvl de base 99, correto
     } else {
         [
-        log ===================================
-        log = ainda nao estou no lvl 99 de base
-        log = impossível começar a rebornar
-        log = lvl de base que estou: $.lvl
-        log = parando macro
-        log ===================================
+        error ===================================
+        error = ainda nao estou no lvl 99 de base
+        error = impossível começar a rebornar
+        error = lvl de base que estou: $.lvl
+        error = parando macro
+        error ===================================
         ]
         stop
     }
@@ -386,12 +513,12 @@ macro rebornarAgora {
         log = lvl de classe 50, correto
     } else {
         [
-        log ===================================
-        log = ainda não estou no lvl 50 de classe
-        log = impossível começar a rebornar
-        log = lvl de classe que estou: $.joblvl
-        log = parando a macro
-        log ===================================
+        error ===================================
+        error = ainda não estou no lvl 50 de classe
+        error = impossível começar a rebornar
+        error = lvl de classe que estou: $.joblvl
+        error = parando a macro
+        error ===================================
         ]
         stop
     }
@@ -402,13 +529,15 @@ macro rebornarAgora {
         log = já paguei a taxa pro livro
     } else {
         [
-        log ===================================
-        log = não estou com a quantidade certa de zenys
-        log = impossivel rebornar desse jeito
-        log ===================================
+        error ===================================
+        error = não estou com a quantidade certa de zenys
+        error = impossivel rebornar desse jeito
+        error = quanto que tenho: $.zeny zenys
+        error ===================================
         ]
         stop
     }
+    log = Tudo certo :-D
     log ==========================
         
     #se chegou até aqui é porque está tudo certinho
@@ -416,6 +545,17 @@ macro rebornarAgora {
 }
 
 automacro mostrarAjuda {
+    ConfigKeyNot quest_eden em_curso
+    ConfigKeyNot quest_eden terminando
+    ConfigKeyNot naSequenciaDeSalvamento true
+    ConfigKeyNot virarClasse2 true
+    ConfigKeyNot virarClasse2T true
+    ConfigKeyNot virarClasse3 true
+    ConfigKeyNot quest_skill true
+    ConfigKeyNot esperarFazerQuest true
+    ConfigKey aeroplano1 none
+    ConfigKey aeroplano2 none
+    ConfigKey questRenascer_estagio none
     timeout 600 #10 minutos
     BaseLevel > 0
     exclusive 1

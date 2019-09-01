@@ -73,6 +73,9 @@ automacro questEden12_iniciandoMoverPerto {
     ConfigKeyNot quest_eden terminando
     IsNotEquippedID armor 15009 #Uniforme Valhalla Iniciante
     InInventoryID 15009 = 0 #Uniforme Valhalla Iniciante
+    JobIDNot $parametrosClasses{idC1T}
+    JobIDNot $parametrosClasses{idC2T}
+    JobIDNot $parametrosClasses{idC2TAlt}
     call moverPertoDosNpcEden
 }
 
@@ -90,6 +93,9 @@ automacro questEden26_iniciandoMoverPerto {
     ConfigKeyNot quest_eden terminando
     IsNotEquippedID armor 15010 #Uniforme Valhalla Intermediário
     InInventoryID 15010 = 0 #Uniforme Valhalla Intermediário
+    JobIDNot $parametrosClasses{idC1T}
+    JobIDNot $parametrosClasses{idC2T}
+    JobIDNot $parametrosClasses{idC2TAlt}
     call moverPertoDosNpcEden
 }
 
@@ -110,6 +116,9 @@ automacro questEden40_iniciandoMoverPerto {
     IsNotEquippedID armor 15011
     InInventoryID 22508 = 1 #Emblema do Éden#
     InInventoryID 15011 = 0 #armadura que ganha com essa quest
+    JobIDNot $parametrosClasses{idC1T}
+    JobIDNot $parametrosClasses{idC2T}
+    JobIDNot $parametrosClasses{idC2TAlt}
     call moverPertoDosNpcEden
 }
 
@@ -126,6 +135,9 @@ automacro questEden60_iniciandoMoverPerto {
     ConfigKeyNot quest_eden terminando
     IsNotEquippedID armor 15031 #Armadura do Grupo Éden
     InInventoryID 15031 = 0 #Armadura do Grupo Éden
+    JobIDNot $parametrosClasses{idC1T}
+    JobIDNot $parametrosClasses{idC2T}
+    JobIDNot $parametrosClasses{idC2TAlt}
     call moverPertoDosNpcEden
 }
 
@@ -783,14 +795,14 @@ automacro questEden12e26e40_PegandoEquips {
         log ===========================================
         ]
         do conf -f o_que_estou_fazendo quest eden pegando Meus Equips de Direito
-        do talk $.NpcNearLastBinId
+        do talk &npc(/hael/i)
         do talk resp 0
         do talk resp 1
         do talk resp /$parametrosQuestEden{armaLevel26e40}/i
 
         if ( $.lvl >= 40 ) {
             #pegar encantamento do chapeu valhalla
-            do talk $.NpcNearLastBinId
+            do talk &npc(/hael/i)
             do talk resp 2
             do talk resp 4
             do talk resp 0
@@ -857,6 +869,7 @@ automacro equipandoArmaEden {
     BaseLevel 1..98 #não quero checar por armas no lvl 99, pode dar treta
     JobIDNot 0 #aprendiz
     JobIDNot 4023 # baby aprendiz
+    overrideAI 1
     run-once 1
     exclusive 1
     call equiparArma
@@ -903,6 +916,7 @@ automacro equipandoArmaduraEden {
     BaseLevel 12..98 #não quero checar por armaduras no lvl 99, pode dar treta
     JobIDNot 0 #aprendiz
     JobIDNot 4023 # baby aprendiz
+    overrideAI 1
     run-once 1
     exclusive 1
     call equiparArmadura
@@ -943,6 +957,7 @@ automacro equipandoBotaEden {
     BaseLevel 12..98 #não quero checar por armas no lvl 99, pode dar treta
     JobIDNot 0 #aprendiz
     JobIDNot 4023 # baby aprendiz
+    overrideAI 1
     run-once 1
     exclusive 1
     call equiparBota
@@ -983,6 +998,7 @@ automacro equipandoChapeuEden {
     BaseLevel 12..98 #não quero checar por armas no lvl 99, pode dar treta
     JobIDNot 0 #aprendiz
     JobIDNot 4023 # baby aprendiz
+    overrideAI 1
     run-once 1
     exclusive 1
     call equiparChapeu
@@ -1011,6 +1027,7 @@ automacro equipandoCapaEden {
     BaseLevel 12..98 #não quero checar por armas no lvl 99, pode dar treta
     JobIDNot 0 #aprendiz
     JobIDNot 4023 # baby aprendiz
+    overrideAI 1
     run-once 1
     exclusive 1
     call equiparCapa
